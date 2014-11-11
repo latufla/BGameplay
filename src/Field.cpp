@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Field.h"
 #include <algorithm>
+#include "BehaviorsFactory.h"
 
 using std::shared_ptr;
 using std::weak_ptr;
@@ -17,6 +18,14 @@ Field::~Field() {
 weak_ptr<ObjectBase> Field::addObject(uint32_t id, const ObjectInfo* info) {
 	shared_ptr<ObjectBase> obj = make_shared<ObjectBase>(id, info->name);
 	objects.push_back(obj);
+
+	for (auto i : info->behaviors) {
+		auto b = BehaviorsFactory::create(i, obj);
+		behaviors.push_back(b);
+	
+		obj->addBehavior(b);
+	}
+
 	return weak_ptr<ObjectBase>(obj);
 }
 
@@ -30,8 +39,8 @@ bool Field::removeObject(std::weak_ptr<ObjectBase> obj) {
 
 bool Field::startBehaviors() {
 	bool res = true;
-	for (auto i : objects) {
-		bool sc = i->startBehaviors();
+	for (auto i : behaviors) {
+		bool sc = i->start();
 		res = res && sc;
 	}
 	return res;
@@ -39,25 +48,44 @@ bool Field::startBehaviors() {
 
 bool Field::stopBehaviors() {
 	bool res = true;
-	for (auto i : objects) {
-		bool sc = i->stopBehaviors();
+	for (auto i : behaviors) {
+		bool sc = i->stop();
 		res = res && sc;
 	}
 	return res;
 }
 
-bool Field::doStep(float) {
+bool Field::doStep(float stepMSec) {
 	bool res = true;
-	// do behaviors
-	//
+	for (auto i : behaviors) {
+		bool sc = i->tryDoStep(stepMSec);
+		res = res && sc;
+	}
 	doRemoveStep();
 	return res;
 }
 
 bool Field::doRemoveStep() {
-	objects.erase(remove_if(begin(objects), end(objects), [](shared_ptr<ObjectBase> obj) -> bool{
+	auto objectsToRemove = remove_if(begin(objects), end(objects), [](shared_ptr<ObjectBase> obj) -> bool{		
 		return obj->getRemove();
-	}), objects.end());
+	});
+
+	for (auto i = objectsToRemove; i != objects.cend(); ++i){
+		auto behaviorsToRemove = i->get()->getBehaviors();
+		for (auto b : behaviorsToRemove) {
+			auto sb = b.lock();
+			if (!sb)
+				continue;
+			
+			auto it = remove_if(begin(behaviors), end(behaviors), [sb](shared_ptr<BehaviorBase> sb2) -> bool{
+				return sb == sb2;
+			});
+			
+			behaviors.erase(it, behaviors.end());
+		}
+	}
+	objects.erase(objectsToRemove, objects.end());
+	
 	return true;
 }
 

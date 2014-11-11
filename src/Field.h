@@ -22,5 +22,6 @@ private:
 
 	std::vector<std::shared_ptr<ObjectBase>> objects;
 
+	std::vector<std::shared_ptr<BehaviorBase>> behaviors;
 };
 

@@ -2,8 +2,8 @@
 #include "BehaviorBase.h"
 
 
-BehaviorBase::BehaviorBase(std::weak_ptr<ObjectBase> object) 
-	: object(object) {
+BehaviorBase::BehaviorBase(std::string name, std::weak_ptr<ObjectBase> object) 
+	: name(name), object(object) {
 	
 }
 
@@ -19,5 +19,9 @@ bool BehaviorBase::start() {
 
 bool BehaviorBase::stop() {
 	enabled = false;
+	return true;
+}
+
+bool BehaviorBase::tryDoStep(float stepMSec) {
 	return true;
 }

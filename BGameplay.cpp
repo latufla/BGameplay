@@ -13,18 +13,16 @@ int _tmain(int argc, _TCHAR* argv[])
 	
 	ObjectInfo info;
 	info.name = "first";
+
+	std::shared_ptr<BehaviorInfo> behavior = std::make_shared<BehaviorInfo>();
+	behavior->name = "stubBehavior";
+	info.behaviors.push_back(behavior);
+
 	auto obj = field.addObject(1, &info);
 
-	std::shared_ptr<BehaviorBase> behavior = std::make_shared<BehaviorBase>(obj);
-	std::weak_ptr<BehaviorBase> wBehavior(behavior);
-
-	if (auto sObj = obj.lock()) {
-		sObj->addBehavior(wBehavior);
-		behavior->start();
-	}
-	
+	field.startBehaviors();	
 	field.removeObject(obj);
-
+	field.doStep(1.0f);
 	field.doStep(1.0f);
 
 	return 0;

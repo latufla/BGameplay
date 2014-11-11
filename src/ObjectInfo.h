@@ -1,11 +1,14 @@
 #pragma once
-#include <string>
+#include "Info.h"
+#include "BehaviorInfo.h"
+#include <vector>
+#include <memory>
 
-class ObjectInfo {
+class ObjectInfo : public Info {
 public:
 	ObjectInfo() = default;
 	~ObjectInfo() = default;
 
-	std::string name;
+	std::vector<std::shared_ptr<BehaviorInfo>> behaviors;
 };
 

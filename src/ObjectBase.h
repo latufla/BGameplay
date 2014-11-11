@@ -18,6 +18,7 @@ public:
 	bool startBehaviors();
 	bool stopBehaviors();
 
+	std::vector<std::weak_ptr<BehaviorBase>> getBehaviors() const { return behaviors; }
 	std::weak_ptr<BehaviorBase> getBehaviorBy(BehaviorType);
 
 	uint32_t getId() const { return id; }
@@ -31,7 +32,7 @@ private:
 	std::string name;
 
 	std::vector<std::weak_ptr<BehaviorBase>> behaviors;
-
+	
 	bool remove = false;
 };
 
