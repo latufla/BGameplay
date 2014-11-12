@@ -13,7 +13,7 @@ public:
 	~Field();
 
 	std::weak_ptr<ObjectBase> addObject(ObjectInfo const&);
-	bool removeObject(std::weak_ptr<ObjectBase>);
+	bool removeObject(std::weak_ptr<ObjectBase>, bool = false);
 
 	bool startBehaviors();
 	bool startBehaviors(std::weak_ptr<ObjectBase>);
@@ -27,7 +27,7 @@ public:
 	bool resumeBehaviors();
 	bool resumeBehaviors(std::weak_ptr<ObjectBase>);
 
-	bool doStep(float); // mSec
+	bool doStep(float); // sec
 
 private:
 	bool doRemoveStep();

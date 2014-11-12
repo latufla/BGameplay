@@ -14,6 +14,10 @@ Field::Field(uint32_t initialObjectId)
 }
 
 Field::~Field() {
+	for (auto i : objects) {
+		i->setRemove(true);
+	}
+	doRemoveStep();
 }
 
 
@@ -32,12 +36,16 @@ weak_ptr<ObjectBase> Field::addObject(ObjectInfo const& info) {
 	return weak_ptr<ObjectBase>(obj);
 }
 
-bool Field::removeObject(std::weak_ptr<ObjectBase> obj) {
-	if (auto sObj = obj.lock()) {
-		sObj->setRemove(true);
-		return true;
-	}
-	return false;
+bool Field::removeObject(std::weak_ptr<ObjectBase> obj, bool onNextStep) {
+	auto sObj = obj.lock();
+	if (!sObj)
+		return false;
+
+	sObj->setRemove(true);
+	if (!onNextStep)
+		return doRemoveStep(); // not efficient, but single entry point 
+
+	return true;
 }
 
 
@@ -124,26 +132,25 @@ bool Field::doStep(float stepMSec) {
 }
 
 bool Field::doRemoveStep() {
-	auto objectsToRemove = remove_if(begin(objects), end(objects), [](shared_ptr<ObjectBase> obj) -> bool{		
-		return obj->getRemove();
-	});
+	auto lastObject = remove_if(begin(objects), end(objects), [this](shared_ptr<ObjectBase> obj) -> bool{
+		if (!obj->getRemove())
+			return false;
 
-	for (auto i = objectsToRemove; i != objects.cend(); ++i){
-		auto behaviorsToRemove = i->get()->getBehaviors();
+		auto behaviorsToRemove = obj->getBehaviors();
 		for (auto b : behaviorsToRemove) {
 			auto sb = b.lock();
 			if (!sb)
 				continue;
-			
-			auto it = remove_if(begin(behaviors), end(behaviors), [sb](shared_ptr<BehaviorBase> sb2) -> bool{
+
+			auto lastBehavior = remove_if(begin(behaviors), end(behaviors), [sb](shared_ptr<BehaviorBase> sb2) -> bool{
 				return sb == sb2;
 			});
-			
-			behaviors.erase(it, behaviors.end());
+			behaviors.erase(lastBehavior, cend(behaviors));
 		}
-	}
-	objects.erase(objectsToRemove, objects.end());
+		return true;
+	});
 	
+	objects.erase(lastObject, cend(objects));
 	return true;
 }
 

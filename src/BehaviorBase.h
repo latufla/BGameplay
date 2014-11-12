@@ -6,9 +6,9 @@
 class BehaviorBase {
 public:
 	BehaviorBase() = delete;
-	BehaviorBase(std::weak_ptr<BehaviorInfo> info, std::weak_ptr<ObjectBase>);
+	BehaviorBase(std::weak_ptr<BehaviorInfo>, std::weak_ptr<ObjectBase>);
 
-	virtual ~BehaviorBase();
+	virtual ~BehaviorBase() {};
 
 	virtual bool start();
 	virtual bool stop();

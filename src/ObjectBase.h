@@ -27,7 +27,9 @@ protected:
 	
 	bool pauseBehaviors();
 	bool resumeBehaviors();
-	
+
+	std::vector<std::weak_ptr<BehaviorBase>> getBehaviors() const { return behaviors; }
+
 	uint32_t id;
 	std::string name;
 

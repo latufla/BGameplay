@@ -11,11 +11,6 @@ BehaviorBase::BehaviorBase(std::weak_ptr<BehaviorInfo> info, std::weak_ptr<Objec
 		name = sInfo->name;
 }
 
-
-BehaviorBase::~BehaviorBase() {
-	stop();
-}
-
 bool BehaviorBase::start() {
 	enabled = true;
 	lifeTime = 0;

@@ -11,20 +11,23 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	Field field(0);
 	
-	ObjectInfo info;
-	info.name = "first";
+	ObjectInfo oInfo;
+	oInfo.name = "first";
+	std::shared_ptr<BehaviorInfo> bInfo = std::make_shared<BehaviorInfo>();
+	bInfo->name = "punch";
+	oInfo.behaviors.push_back(bInfo);
 
-	std::shared_ptr<BehaviorInfo> behavior = std::make_shared<BehaviorInfo>();
-	behavior->name = "stubBehavior";
-	info.behaviors.push_back(behavior);
+	ObjectInfo oInfo2;
+	oInfo2.name = "second";
+	std::shared_ptr<BehaviorInfo> bInfo2 = std::make_shared<BehaviorInfo>();
+	bInfo2->name = "heal";
+	oInfo2.behaviors.push_back(bInfo2);
 
-	auto obj = field.addObject(info);
+	auto obj = field.addObject(oInfo);
+	auto obj2 = field.addObject(oInfo2);
 
- 	field.startBehaviors(obj);	
-//  field.pauseBehaviors(obj);
-// 	field.resumeBehaviors(obj);
-// 	field.stopBehaviors(obj);
-// 	field.removeObject(obj);
+	field.startBehaviors();
+	field.removeObject(obj2);
 	field.doStep(1.0f);
 	field.doStep(1.0f);
 
