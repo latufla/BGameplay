@@ -7,9 +7,12 @@ using std::to_string;
 BehaviorBase::BehaviorBase(std::weak_ptr<BehaviorInfo> info, std::weak_ptr<ObjectBase> object)
 	: object(object) {
 
-	if (auto sInfo = info.lock())
+	if (auto sInfo = info.lock()) {
 		name = sInfo->name;
+		priority = sInfo->priority;
+	}
 }
+	
 
 bool BehaviorBase::start() {
 	enabled = true;

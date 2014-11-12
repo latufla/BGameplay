@@ -21,14 +21,22 @@ Field::~Field() {
 }
 
 
-weak_ptr<ObjectBase> Field::addObject(ObjectInfo const& info) {
-	shared_ptr<ObjectBase> obj = make_shared<ObjectBase>(nextObjectId, info.name);
+weak_ptr<ObjectBase> Field::addObject(std::weak_ptr<ObjectInfo> info) {
+	auto sInfo = info.lock();
+	if (!sInfo)
+		throw std::exception("Field::addObject can`t add object");
+
+	shared_ptr<ObjectBase> obj = make_shared<ObjectBase>(nextObjectId, sInfo->name);
 	objects.push_back(obj);
 	
-	for (auto i : info.behaviors) {
+	for (auto i : sInfo->behaviors) {
 		auto b = BehaviorsFactory::create(i, obj);
-		behaviors.push_back(b);
-	
+
+		auto it = find_if(begin(behaviors), end(behaviors), [&b](shared_ptr<BehaviorBase> b2){
+			return b2->getPriority() < b->getPriority();
+		});
+		behaviors.insert(it, b);
+
 		obj->addBehavior(b);
 	}
 

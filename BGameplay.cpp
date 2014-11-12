@@ -11,20 +11,30 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	Field field(0);
 	
-	ObjectInfo oInfo;
-	oInfo.name = "first";
-	std::shared_ptr<BehaviorInfo> bInfo = std::make_shared<BehaviorInfo>();
-	bInfo->name = "punch";
-	oInfo.behaviors.push_back(bInfo);
+	std::shared_ptr<ObjectInfo> damager = std::make_shared<ObjectInfo>();
+	damager->name = "damager";
+	
+	std::shared_ptr<BehaviorInfo> punch = std::make_shared<BehaviorInfo>();
+	punch->name = "punch";
+	punch->priority = 3;
+	damager->behaviors.push_back(punch);
 
-	ObjectInfo oInfo2;
-	oInfo2.name = "second";
-	std::shared_ptr<BehaviorInfo> bInfo2 = std::make_shared<BehaviorInfo>();
-	bInfo2->name = "heal";
-	oInfo2.behaviors.push_back(bInfo2);
 
-	auto obj = field.addObject(oInfo);
-	auto obj2 = field.addObject(oInfo2);
+	std::shared_ptr<ObjectInfo> healer = std::make_shared<ObjectInfo>();
+	healer->name = "healer";
+
+	std::shared_ptr<BehaviorInfo> heal = std::make_shared<BehaviorInfo>();
+	heal->name = "heal";
+	heal->priority = 1;
+	healer->behaviors.push_back(heal);
+
+	std::shared_ptr<BehaviorInfo> ressurect = std::make_shared<BehaviorInfo>();
+	ressurect->name = "resurrect";
+	ressurect->priority = 2;
+	healer->behaviors.push_back(ressurect);
+	
+	auto obj = field.addObject(damager);
+	auto obj2 = field.addObject(healer);
 
 	field.startBehaviors();
 	field.removeObject(obj2);

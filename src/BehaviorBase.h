@@ -20,7 +20,7 @@ public:
 
 	std::string getName() const { return name; }
 	std::weak_ptr<ObjectBase> getObject() const { return object; }
-
+	uint32_t getPriority() const { return priority; }
 	bool getEnabled() const { return enabled; }
 
 protected:
@@ -28,10 +28,10 @@ protected:
 	virtual bool canDoStep();
 
 	std::string name;
+	uint32_t priority = 0;
 	std::weak_ptr<ObjectBase> object;
 	
 	float lifeTime = 0.0f;
-
 	bool enabled = false;
 };
 

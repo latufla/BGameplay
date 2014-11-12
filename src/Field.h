@@ -12,7 +12,7 @@ public:
 	
 	~Field();
 
-	std::weak_ptr<ObjectBase> addObject(ObjectInfo const&);
+	std::weak_ptr<ObjectBase> addObject(std::weak_ptr<ObjectInfo>);
 	bool removeObject(std::weak_ptr<ObjectBase>, bool = false);
 
 	bool startBehaviors();
