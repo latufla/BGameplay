@@ -14,7 +14,7 @@ public:
 		if (auto sInfo = info.lock())
 			name = sInfo->name;
 
-		std::shared_ptr<BehaviorBase> behavior = std::make_shared<BehaviorBase>(name, obj);
+		std::shared_ptr<BehaviorBase> behavior = std::make_shared<BehaviorBase>(info, obj);
 		return behavior;
 	};
 };

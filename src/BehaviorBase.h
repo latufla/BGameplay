@@ -1,24 +1,37 @@
 #pragma once
 #include <memory>
 #include "ObjectBase.h"
-
-enum BehaviorType {};
+#include "BehaviorInfo.h"
 
 class BehaviorBase {
 public:
-	BehaviorBase(std::string name, std::weak_ptr<ObjectBase>);
+	BehaviorBase() = delete;
+	BehaviorBase(std::weak_ptr<BehaviorInfo> info, std::weak_ptr<ObjectBase>);
 
 	virtual ~BehaviorBase();
 
 	virtual bool start();
 	virtual bool stop();
 
-	bool tryDoStep(float); // mSec
+	virtual bool pause();
+	virtual bool resume();
 
-private:
+	bool tryDoStep(float); // sec
+
+	std::string getName() const { return name; }
+	std::weak_ptr<ObjectBase> getObject() const { return object; }
+
+	bool getEnabled() const { return enabled; }
+
+protected:
+	virtual bool doStep(float);
+	virtual bool canDoStep();
+
 	std::string name;
 	std::weak_ptr<ObjectBase> object;
+	
+	float lifeTime = 0.0f;
 
-	bool enabled = false;	
+	bool enabled = false;
 };
 

@@ -9,11 +9,14 @@ public:
 	Field();
 	~Field();
 
-	std::weak_ptr<ObjectBase> addObject(uint32_t, const ObjectInfo*);
+	std::weak_ptr<ObjectBase> addObject(uint32_t, std::weak_ptr<ObjectInfo>);
 	bool removeObject(std::weak_ptr<ObjectBase>);
 
 	bool startBehaviors();
 	bool stopBehaviors();
+
+	bool pauseBehaviors();
+	bool resumeBehaviors();
 
 	bool doStep(float); // mSec
 

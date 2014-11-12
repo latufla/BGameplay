@@ -15,11 +15,12 @@ Field::~Field() {
 }
 
 
-weak_ptr<ObjectBase> Field::addObject(uint32_t id, const ObjectInfo* info) {
-	shared_ptr<ObjectBase> obj = make_shared<ObjectBase>(id, info->name);
+weak_ptr<ObjectBase> Field::addObject(uint32_t id, std::weak_ptr<ObjectInfo> info) {
+	auto sInfo = info.lock(); // TODO: check 
+	shared_ptr<ObjectBase> obj = make_shared<ObjectBase>(id, sInfo->name);
 	objects.push_back(obj);
 
-	for (auto i : info->behaviors) {
+	for (auto i : sInfo->behaviors) {
 		auto b = BehaviorsFactory::create(i, obj);
 		behaviors.push_back(b);
 	
@@ -50,6 +51,24 @@ bool Field::stopBehaviors() {
 	bool res = true;
 	for (auto i : behaviors) {
 		bool sc = i->stop();
+		res = res && sc;
+	}
+	return res;
+}
+
+bool Field::pauseBehaviors() {
+	bool res = true;
+	for (auto i : behaviors) {
+		bool sc = i->pause();
+		res = res && sc;
+	}
+	return res;
+}
+
+bool Field::resumeBehaviors() {
+	bool res = true;
+	for (auto i : behaviors) {
+		bool sc = i->resume();
 		res = res && sc;
 	}
 	return res;
