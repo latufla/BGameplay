@@ -64,3 +64,19 @@ bool ObjectBase::stopBehaviors() {
 	}
 	return true;
 }
+
+bool ObjectBase::resumeBehaviors() {
+	for (auto b : behaviors) {
+		if (auto sb = b.lock())
+			sb->resume();
+	}
+	return true;
+}
+
+bool ObjectBase::pauseBehaviors() {
+	for (auto b : behaviors) {
+		if (auto sb = b.lock())
+			sb->pause();
+	}
+	return true;
+}

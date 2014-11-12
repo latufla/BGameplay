@@ -9,21 +9,22 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Field field;
+	Field field(0);
 	
-	std::shared_ptr<ObjectInfo> info = std::make_shared<ObjectInfo>();
-	info->name = "first";
+	ObjectInfo info;
+	info.name = "first";
 
 	std::shared_ptr<BehaviorInfo> behavior = std::make_shared<BehaviorInfo>();
 	behavior->name = "stubBehavior";
-	info->behaviors.push_back(behavior);
+	info.behaviors.push_back(behavior);
 
-	auto obj = field.addObject(1, info);
+	auto obj = field.addObject(info);
 
- 	field.startBehaviors();	
-	field.pauseBehaviors();
-	field.resumeBehaviors();
- 	field.removeObject(obj);
+ 	field.startBehaviors(obj);	
+//  field.pauseBehaviors(obj);
+// 	field.resumeBehaviors(obj);
+// 	field.stopBehaviors(obj);
+// 	field.removeObject(obj);
 	field.doStep(1.0f);
 	field.doStep(1.0f);
 
