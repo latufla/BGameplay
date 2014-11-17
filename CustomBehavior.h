@@ -1,5 +1,6 @@
 #pragma once
 #include "src\Behavior.h"
+#include "CustomFactory.h"
 
 class CustomBehavior : public Behavior{
 public:
@@ -14,8 +15,10 @@ protected:
 		auto sFactory = factory.lock();
 		if (!sFactory)
 			return false;
+
+		CustomFactory* cFactory = (CustomFactory*)sFactory.get();
 	
-		auto cmd = sFactory->create("CustomCommand", object, object);
+		auto cmd = sFactory->create(cFactory->CUSTOM_COMMAND, object, object);
 		return cmd->tryToExecute();
 	};
 };
