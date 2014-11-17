@@ -5,39 +5,49 @@
 #include "src\ObjectBase.h"
 #include "src\BehaviorBase.h"
 #include "src\Field.h"
+#include "src\Factory.h"
+#include "CustomBehavior.h"
+#include "CustomBehaviorInfo.h"
 
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Field field(0);
+	Factory factory;
+	// register all info and behavior types from cfg
+	factory.registerInfo< CustomBehaviorInfo, BehaviorInfo >("punch");
+	factory.registerInfo< CustomBehaviorInfo, BehaviorInfo >("heal");
+	factory.registerInfo< CustomBehaviorInfo, BehaviorInfo >("resurrect");
+
+	factory.registerBehavior< CustomBehavior, BehaviorBase >("punch");
+	factory.registerBehavior< CustomBehavior, BehaviorBase >("heal");
+	factory.registerBehavior< CustomBehavior, BehaviorBase >("resurrect");
+	// ---
+	Field field(0, factory);
 	
-	std::shared_ptr<ObjectInfo> damager = std::make_shared<ObjectInfo>();
-	damager->name = "damager";
+	std::shared_ptr<ObjectInfo> damagerInfo = std::make_shared<ObjectInfo>();
+	damagerInfo->name = "damager";
 	
-	std::shared_ptr<BehaviorInfo> punch = std::make_shared<BehaviorInfo>();
-	punch->name = "punch";
+	std::shared_ptr<BehaviorInfo> punch = factory.create("punch");
 	punch->priority = 3;
-	damager->behaviors.push_back(punch);
+	damagerInfo->behaviors.push_back(punch);
 
 
-	std::shared_ptr<ObjectInfo> healer = std::make_shared<ObjectInfo>();
-	healer->name = "healer";
+	std::shared_ptr<ObjectInfo> healerInfo = std::make_shared<ObjectInfo>();
+	healerInfo->name = "healer";
 
-	std::shared_ptr<BehaviorInfo> heal = std::make_shared<BehaviorInfo>();
-	heal->name = "heal";
+	std::shared_ptr<BehaviorInfo> heal = factory.create("heal");
 	heal->priority = 1;
-	healer->behaviors.push_back(heal);
+	healerInfo->behaviors.push_back(heal);
 
-	std::shared_ptr<BehaviorInfo> ressurect = std::make_shared<BehaviorInfo>();
-	ressurect->name = "resurrect";
-	ressurect->priority = 2;
-	healer->behaviors.push_back(ressurect);
+	std::shared_ptr<BehaviorInfo> resurrect = factory.create("resurrect");
+	resurrect->priority = 2;
+	healerInfo->behaviors.push_back(resurrect);
 	
-	auto obj = field.addObject(damager);
-	auto obj2 = field.addObject(healer);
+	auto damager = field.addObject(damagerInfo);
+	auto healer = field.addObject(healerInfo);
 
 	field.startBehaviors();
-	field.removeObject(obj2);
+	field.removeObject(healer);
 	field.doStep(1.0f);
 	field.doStep(1.0f);
 

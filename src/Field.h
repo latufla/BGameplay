@@ -4,11 +4,12 @@
 #include "ObjectInfo.h"
 #include <vector>
 #include <unordered_map>
+#include "Factory.h"
 
 class Field {
 public:
 	Field() = default;
-	Field(uint32_t);
+	Field(uint32_t, Factory const&);
 	
 	~Field();
 
@@ -35,8 +36,9 @@ private:
 	std::vector<std::shared_ptr<ObjectBase>> objects;
 	std::vector<std::shared_ptr<BehaviorBase>> behaviors;
 
-	std::unordered_map<uint32_t, std::shared_ptr<ObjectBase>> idToObject;
 	uint32_t initialObjectId = 0;
 	uint32_t nextObjectId = 0;
+
+	Factory factory;
 };
 
