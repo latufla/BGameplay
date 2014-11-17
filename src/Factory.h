@@ -12,6 +12,11 @@ std::shared_ptr<P> createInstance() {
 }
 
 template<class T, class P>
+std::shared_ptr<P> createInstance(uint32_t initialId, Factory* factory) {
+	return std::make_shared<T>(initialId, factory);
+}
+
+template<class T, class P>
 std::shared_ptr<P> createInstance(std::string name, std::weak_ptr<Object> caller, std::weak_ptr<Object> target) {
 	return std::make_shared<T>(name, caller, target);
 }
@@ -25,15 +30,15 @@ class Factory {
 public:
 	Factory() = default;
 	~Factory() = default;
-// 
-// 	template<class T, class P>
-// 	void registerField(std::string name) {
-// 		nameToCommandInstance[name] = &createInstance < T, P > ;
-// 	}
-// 
-// 	std::shared_ptr<Command> create(std::string name, std::weak_ptr<Object> caller, std::weak_ptr<Object> target) {
-// 		return nameToCommandInstance.at(name)(name, caller, target);
-// 	}
+
+	template<class T, class P>
+	void registerField(std::string name) {
+		nameToFieldInstance[name] = &createInstance < T, P > ;
+	}
+
+	std::shared_ptr<Field> create(std::string name, uint32_t initialId) {
+		return nameToFieldInstance[name](initialId, this);
+	}
 
 
 	template<class T, class P>

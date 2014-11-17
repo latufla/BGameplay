@@ -23,8 +23,11 @@ int _tmain(int argc, _TCHAR* argv[])
 	factory.registerBehavior< CustomBehavior, Behavior >(factory.HEAL_BEHAVIOR);
 
 	factory.registerCommand<CustomCommand, Command>(factory.CUSTOM_COMMAND);
+	
+	factory.registerField< Field, Field >(factory.FIELD);
 	// ---
-	Field field(0, &factory);
+
+	std::shared_ptr<Field> field = factory.create(factory.FIELD, 0);
 	
 	std::shared_ptr<ObjectInfo> damagerInfo = std::make_shared<ObjectInfo>();
 	damagerInfo->name = "damager";
@@ -44,13 +47,13 @@ int _tmain(int argc, _TCHAR* argv[])
 	std::vector<std::string> cmds{"healer"};
 	healerInfo->applicableCommands.emplace(factory.CUSTOM_COMMAND, cmds);
 	
-	auto damager = field.addObject(damagerInfo);
-	auto healer = field.addObject(healerInfo);
+	auto damager = field->addObject(damagerInfo);
+	auto healer = field->addObject(healerInfo);
 
-	field.startBehaviors();
-	field.removeObject(damager);
-	field.doStep(1.0f);
-	field.doStep(1.0f);
+	field->startBehaviors();
+	field->removeObject(damager);
+	field->doStep(1.0f);
+	field->doStep(1.0f);
 
 	return 0;
 }
