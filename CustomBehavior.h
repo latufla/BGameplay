@@ -1,19 +1,22 @@
 #pragma once
 #include "src\Behavior.h"
-#include "CustomCommand.h"
 
 class CustomBehavior : public Behavior{
 public:
-	CustomBehavior(std::weak_ptr<BehaviorInfo> info, std::weak_ptr<Object> obj) 
-		: Behavior(info, obj) {
+	CustomBehavior(std::weak_ptr<BehaviorInfo> info, std::weak_ptr<Object> obj, std::weak_ptr<Factory> factory) 
+		: Behavior(info, obj, factory) {
 	};
 
 protected:
 	bool doStep(float stepSec) override {
 		__super::doStep(stepSec);
 		
-		CustomCommand cmd(object, object);
-		return cmd.tryToExecute();
+		auto sFactory = factory.lock();
+		if (!sFactory)
+			return false;
+	
+		auto cmd = sFactory->create("CustomCommand", object, object);
+		return cmd->tryToExecute();
 	};
 };
 

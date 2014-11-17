@@ -3,9 +3,11 @@
 #include "Behavior.h"
 #include <algorithm>
 
-Object::Object(uint32_t id, std::string name) 
-	: id(id), name(name){
-	 
+Object::Object(uint32_t id, std::weak_ptr<ObjectInfo> info) 
+	: id(id), info(info){
+
+	if(auto sInfo = info.lock())
+		name = sInfo->name;
 }
 
 Object::~Object() {

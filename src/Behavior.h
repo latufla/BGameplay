@@ -3,10 +3,12 @@
 #include "Object.h"
 #include "BehaviorInfo.h"
 
+class Factory;
+
 class Behavior {
 public:
 	Behavior() = delete;
-	Behavior(std::weak_ptr<BehaviorInfo>, std::weak_ptr<Object>);
+	Behavior(std::weak_ptr<BehaviorInfo>, std::weak_ptr<Object>, std::weak_ptr<Factory>);
 
 	virtual ~Behavior() {};
 
@@ -34,5 +36,7 @@ protected:
 	
 	float lifeTime = 0.0f;
 	bool enabled = false;
+
+	std::weak_ptr < Factory > factory;
 };
 

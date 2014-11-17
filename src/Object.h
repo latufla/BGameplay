@@ -1,13 +1,14 @@
 #pragma once
 #include <memory>
 #include <vector>
+#include "ObjectInfo.h"
 
 class Behavior;
 
 class Object {
 public:
 	Object() = delete;
-	Object(uint32_t id, std::string name);	
+	Object(uint32_t id, std::weak_ptr<ObjectInfo> info);	
 
 	virtual ~Object();
 
@@ -16,6 +17,8 @@ public:
 
 	void setRemove(bool val) { remove = val; }
 	bool getRemove() const { return remove; }
+
+	std::weak_ptr<ObjectInfo> getInfo() const { return info; }
 
 protected:
 	bool addBehavior(std::weak_ptr<Behavior>);
@@ -30,7 +33,9 @@ protected:
 	std::vector<std::weak_ptr<Behavior>> getBehaviors() const { return behaviors; }
 
 	uint32_t id;
+	
 	std::string name;
+	std::weak_ptr<ObjectInfo> info;
 
 	std::vector<std::weak_ptr<Behavior>> behaviors;
 	

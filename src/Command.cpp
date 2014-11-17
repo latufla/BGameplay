@@ -2,8 +2,8 @@
 #include "Command.h"
 
 
-Command::Command(std::weak_ptr<Object> caller, std::weak_ptr<Object> target) 
-	: caller(caller), target(target){
+Command::Command(std::string name, std::weak_ptr<Object> caller, std::weak_ptr<Object> target) 
+	: name(name), caller(caller), target(target) {
 }
 
 bool Command::tryToExecute() {
@@ -15,8 +15,18 @@ bool Command::tryToExecute() {
 }
 
 bool Command::canExecute() {
-// 	ObjectInfo* info = Infos::getInstance().getObjectInfoBy(target->getName());
-// 	ObjectBase* commander = caller->getController()->getObject();
-// 	return info->canApplyCommand(getType(), commander->getName());
-	return true;
+	auto sTarget = target.lock();
+	if (!sTarget)
+		return false;
+		
+	auto info = sTarget->getInfo();
+	auto sInfo = info.lock();
+	if (!sInfo)
+		return false;
+
+	auto sCaller = caller.lock();
+	if (!sCaller)
+		return false;
+
+	return sInfo->canApplyCommand(getName(), sCaller->getName());
 }

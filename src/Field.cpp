@@ -7,10 +7,10 @@ using std::weak_ptr;
 using std::make_shared;
 using std::remove_if;
 
-Field::Field(uint32_t initialObjectId, Factory const& factory) 
+Field::Field(uint32_t initialObjectId, std::shared_ptr<Factory> factory) 
 	: initialObjectId(initialObjectId)
 	, nextObjectId(initialObjectId + 1)
-	, factory(factory){
+	, factory(factory) {
 
 }
 
@@ -27,11 +27,11 @@ weak_ptr<Object> Field::addObject(std::weak_ptr<ObjectInfo> info) {
 	if (!sInfo)
 		throw std::exception("Field::addObject can`t add object");
 
-	shared_ptr<Object> obj = make_shared<Object>(nextObjectId, sInfo->name);
+	shared_ptr<Object> obj = make_shared<Object>(nextObjectId, sInfo);
 	objects.push_back(obj);
 	
 	for (auto i : sInfo->behaviors) {
-		auto b = factory.create(i, obj);
+		auto b = factory->create(i, obj, factory);
 
 		auto it = find_if(begin(behaviors), end(behaviors), [&b](shared_ptr<Behavior> b2){
 			return b2->getPriority() < b->getPriority();

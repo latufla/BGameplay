@@ -5,7 +5,7 @@
 class Command {
 public:
 	Command() = delete;
-	Command(std::weak_ptr<Object>, std::weak_ptr<Object>);
+	Command(std::string name, std::weak_ptr<Object>, std::weak_ptr<Object>);
 
 	~Command() = default;
 
