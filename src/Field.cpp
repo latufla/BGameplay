@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Field.h"
 #include <algorithm>
-#include "BehaviorsFactory.h"
 
 using std::shared_ptr;
 using std::weak_ptr;

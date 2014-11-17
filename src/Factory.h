@@ -35,12 +35,13 @@ public:
 
 	template<class T, class P>
 	void registerBehavior(std::string name) {
-		nameToInstance.emplace(name, &createInstance<T, P>);
+		nameToInstance[name] = &createInstance<T, P>;
 	}
 	
 	std::shared_ptr<BehaviorBase> create(std::shared_ptr<BehaviorInfo> info, std::weak_ptr<ObjectBase> obj) {
 		return nameToInstance.at(info->name)(info, obj);
 	}
+
 
 private:
 	std::unordered_map <

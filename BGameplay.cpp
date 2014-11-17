@@ -13,6 +13,7 @@
 int _tmain(int argc, _TCHAR* argv[])
 {
 	Factory factory;
+	
 	// register all info and behavior types from cfg
 	factory.registerInfo< CustomBehaviorInfo, BehaviorInfo >("punch");
 	factory.registerInfo< CustomBehaviorInfo, BehaviorInfo >("heal");
