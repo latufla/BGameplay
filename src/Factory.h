@@ -1,10 +1,10 @@
 #pragma once
 #include "Info.h"
 #include <memory>
-#include "BehaviorBase.h"
-#include "ObjectBase.h"
+#include "Behavior.h"
+#include "Object.h"
 #include <unordered_map>
-#include "CommandBase.h"
+#include "Command.h"
 
 template<class T, class P>
 std::shared_ptr<P> createInstance() {
@@ -12,12 +12,12 @@ std::shared_ptr<P> createInstance() {
 }
 
 template<class T, class P>
-std::shared_ptr<P> createInstance(std::weak_ptr<ObjectBase> caller, std::weak_ptr<ObjectBase> target) {
+std::shared_ptr<P> createInstance(std::weak_ptr<Object> caller, std::weak_ptr<Object> target) {
 	return std::make_shared<T>(caller, target);
 }
 
 template<class T, class P>
-std::shared_ptr<P> createInstance(std::shared_ptr<BehaviorInfo> info, std::weak_ptr<ObjectBase> carrier) {
+std::shared_ptr<P> createInstance(std::shared_ptr<BehaviorInfo> info, std::weak_ptr<Object> carrier) {
 	return std::make_shared<T>(info, carrier);
 }
 
@@ -43,7 +43,7 @@ public:
 		nameToBehaviorInstance[name] = &createInstance<T, P>;
 	}
 	
-	std::shared_ptr<BehaviorBase> create(std::shared_ptr<BehaviorInfo> info, std::weak_ptr<ObjectBase> obj) {
+	std::shared_ptr<Behavior> create(std::shared_ptr<BehaviorInfo> info, std::weak_ptr<Object> obj) {
 		return nameToBehaviorInstance.at(info->name)(info, obj);
 	}
 
@@ -53,7 +53,7 @@ public:
 		nameToCommandInstance[name] = &createInstance < T, P > ;
 	}
 
-	std::shared_ptr<CommandBase> create(std::string name, std::weak_ptr<ObjectBase> caller, std::weak_ptr<ObjectBase> target) {
+	std::shared_ptr<Command> create(std::string name, std::weak_ptr<Object> caller, std::weak_ptr<Object> target) {
 		return nameToCommandInstance.at(name)(caller, target);
 	}
 
@@ -66,13 +66,13 @@ private:
 
 	std::unordered_map<
 		std::string, 
-		std::shared_ptr<BehaviorBase>(*)(std::shared_ptr<BehaviorInfo>, std::weak_ptr<ObjectBase>)
+		std::shared_ptr<Behavior>(*)(std::shared_ptr<BehaviorInfo>, std::weak_ptr<Object>)
 	> nameToBehaviorInstance;
 
 
 	std::unordered_map <
 		std::string,
-		std::shared_ptr<CommandBase>(*)(std::weak_ptr<ObjectBase>, std::weak_ptr<ObjectBase>)
+		std::shared_ptr<Command>(*)(std::weak_ptr<Object>, std::weak_ptr<Object>)
 	> nameToCommandInstance;
 };
 

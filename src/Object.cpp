@@ -1,23 +1,23 @@
 #include "stdafx.h"
-#include "ObjectBase.h"
-#include "BehaviorBase.h"
+#include "Object.h"
+#include "Behavior.h"
 #include <algorithm>
 
-ObjectBase::ObjectBase(uint32_t id, std::string name) 
+Object::Object(uint32_t id, std::string name) 
 	: id(id), name(name){
 	 
 }
 
-ObjectBase::~ObjectBase() {
+Object::~Object() {
 	stopBehaviors();
 }
 
-bool ObjectBase::addBehavior(std::weak_ptr<BehaviorBase> b) {
+bool Object::addBehavior(std::weak_ptr<Behavior> b) {
 	auto sb = b.lock();
 	if (!sb)
 		return false;
 	
-	auto it = find_if(cbegin(behaviors), cend(behaviors), [sb](std::weak_ptr<BehaviorBase> b2){
+	auto it = find_if(cbegin(behaviors), cend(behaviors), [sb](std::weak_ptr<Behavior> b2){
 		if (auto sb2 = b2.lock())
 			return sb == sb2;
 
@@ -30,12 +30,12 @@ bool ObjectBase::addBehavior(std::weak_ptr<BehaviorBase> b) {
 	return true;
 }
 
-bool ObjectBase::removeBehavior(std::weak_ptr<BehaviorBase> b) {
+bool Object::removeBehavior(std::weak_ptr<Behavior> b) {
 	auto sb = b.lock();
 	if (!sb)
 		return false;
 
-	auto it = find_if(cbegin(behaviors), cend(behaviors), [sb](std::weak_ptr<BehaviorBase> b2){
+	auto it = find_if(cbegin(behaviors), cend(behaviors), [sb](std::weak_ptr<Behavior> b2){
 		if (auto sb2 = b2.lock())
 			return sb == sb2;
 
@@ -49,7 +49,7 @@ bool ObjectBase::removeBehavior(std::weak_ptr<BehaviorBase> b) {
 	return true;
 }
 
-bool ObjectBase::startBehaviors() {
+bool Object::startBehaviors() {
 	for (auto b : behaviors) {
 		if (auto sb = b.lock())
 			sb->start();
@@ -57,7 +57,7 @@ bool ObjectBase::startBehaviors() {
 	return true;
 }
 
-bool ObjectBase::stopBehaviors() {
+bool Object::stopBehaviors() {
 	for (auto b : behaviors) {
 		if (auto sb = b.lock())
 			sb->stop();
@@ -65,7 +65,7 @@ bool ObjectBase::stopBehaviors() {
 	return true;
 }
 
-bool ObjectBase::resumeBehaviors() {
+bool Object::resumeBehaviors() {
 	for (auto b : behaviors) {
 		if (auto sb = b.lock())
 			sb->resume();
@@ -73,7 +73,7 @@ bool ObjectBase::resumeBehaviors() {
 	return true;
 }
 
-bool ObjectBase::pauseBehaviors() {
+bool Object::pauseBehaviors() {
 	for (auto b : behaviors) {
 		if (auto sb = b.lock())
 			sb->pause();

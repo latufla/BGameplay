@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include "ObjectBase.h"
+#include "Object.h"
 #include "ObjectInfo.h"
 #include <vector>
 #include <unordered_map>
@@ -13,28 +13,28 @@ public:
 	
 	~Field();
 
-	std::weak_ptr<ObjectBase> addObject(std::weak_ptr<ObjectInfo>);
-	bool removeObject(std::weak_ptr<ObjectBase>, bool = false);
+	std::weak_ptr<Object> addObject(std::weak_ptr<ObjectInfo>);
+	bool removeObject(std::weak_ptr<Object>, bool = false);
 
 	bool startBehaviors();
-	bool startBehaviors(std::weak_ptr<ObjectBase>);
+	bool startBehaviors(std::weak_ptr<Object>);
 
 	bool stopBehaviors();
-	bool stopBehaviors(std::weak_ptr<ObjectBase>);
+	bool stopBehaviors(std::weak_ptr<Object>);
 
 	bool pauseBehaviors();
-	bool pauseBehaviors(std::weak_ptr<ObjectBase>);
+	bool pauseBehaviors(std::weak_ptr<Object>);
 	
 	bool resumeBehaviors();
-	bool resumeBehaviors(std::weak_ptr<ObjectBase>);
+	bool resumeBehaviors(std::weak_ptr<Object>);
 
 	bool doStep(float); // sec
 
 private:
 	bool doRemoveStep();
 
-	std::vector<std::shared_ptr<ObjectBase>> objects;
-	std::vector<std::shared_ptr<BehaviorBase>> behaviors;
+	std::vector<std::shared_ptr<Object>> objects;
+	std::vector<std::shared_ptr<Behavior>> behaviors;
 
 	uint32_t initialObjectId = 0;
 	uint32_t nextObjectId = 0;

@@ -1,14 +1,14 @@
 #pragma once
 #include <memory>
-#include "ObjectBase.h"
+#include "Object.h"
 #include "BehaviorInfo.h"
 
-class BehaviorBase {
+class Behavior {
 public:
-	BehaviorBase() = delete;
-	BehaviorBase(std::weak_ptr<BehaviorInfo>, std::weak_ptr<ObjectBase>);
+	Behavior() = delete;
+	Behavior(std::weak_ptr<BehaviorInfo>, std::weak_ptr<Object>);
 
-	virtual ~BehaviorBase() {};
+	virtual ~Behavior() {};
 
 	virtual bool start();
 	virtual bool stop();
@@ -20,7 +20,7 @@ public:
 
 	std::string getName() const { return name; }
 
-	std::weak_ptr<ObjectBase> getObject() const { return object; }
+	std::weak_ptr<Object> getObject() const { return object; }
 	uint32_t getPriority() const { return priority; }
 	bool getEnabled() const { return enabled; }
 
@@ -30,7 +30,7 @@ protected:
 
 	std::string name;
 	uint32_t priority = 0;
-	std::weak_ptr<ObjectBase> object;
+	std::weak_ptr<Object> object;
 	
 	float lifeTime = 0.0f;
 	bool enabled = false;

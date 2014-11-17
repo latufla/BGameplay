@@ -22,18 +22,18 @@ Field::~Field() {
 }
 
 
-weak_ptr<ObjectBase> Field::addObject(std::weak_ptr<ObjectInfo> info) {
+weak_ptr<Object> Field::addObject(std::weak_ptr<ObjectInfo> info) {
 	auto sInfo = info.lock();
 	if (!sInfo)
 		throw std::exception("Field::addObject can`t add object");
 
-	shared_ptr<ObjectBase> obj = make_shared<ObjectBase>(nextObjectId, sInfo->name);
+	shared_ptr<Object> obj = make_shared<Object>(nextObjectId, sInfo->name);
 	objects.push_back(obj);
 	
 	for (auto i : sInfo->behaviors) {
 		auto b = factory.create(i, obj);
 
-		auto it = find_if(begin(behaviors), end(behaviors), [&b](shared_ptr<BehaviorBase> b2){
+		auto it = find_if(begin(behaviors), end(behaviors), [&b](shared_ptr<Behavior> b2){
 			return b2->getPriority() < b->getPriority();
 		});
 		behaviors.insert(it, b);
@@ -42,10 +42,10 @@ weak_ptr<ObjectBase> Field::addObject(std::weak_ptr<ObjectInfo> info) {
 	}
 
 	nextObjectId++;
-	return weak_ptr<ObjectBase>(obj);
+	return weak_ptr<Object>(obj);
 }
 
-bool Field::removeObject(std::weak_ptr<ObjectBase> obj, bool onNextStep) {
+bool Field::removeObject(std::weak_ptr<Object> obj, bool onNextStep) {
 	auto sObj = obj.lock();
 	if (!sObj)
 		return false;
@@ -67,7 +67,7 @@ bool Field::startBehaviors() {
 	return res;
 }
 
-bool Field::startBehaviors(std::weak_ptr<ObjectBase> obj) {
+bool Field::startBehaviors(std::weak_ptr<Object> obj) {
 	auto sObj = obj.lock();
 	if (!sObj)
 		return false;
@@ -85,7 +85,7 @@ bool Field::stopBehaviors() {
 	return res;
 }
 
-bool Field::stopBehaviors(std::weak_ptr<ObjectBase> obj) {
+bool Field::stopBehaviors(std::weak_ptr<Object> obj) {
 	auto sObj = obj.lock();
 	if (!sObj)
 		return false;
@@ -103,7 +103,7 @@ bool Field::pauseBehaviors() {
 	return res;
 }
 
-bool Field::pauseBehaviors(std::weak_ptr<ObjectBase> obj) {
+bool Field::pauseBehaviors(std::weak_ptr<Object> obj) {
 	auto sObj = obj.lock();
 	if (!sObj)
 		return false;
@@ -121,7 +121,7 @@ bool Field::resumeBehaviors() {
 	return res;
 }
 
-bool Field::resumeBehaviors(std::weak_ptr<ObjectBase> obj) {
+bool Field::resumeBehaviors(std::weak_ptr<Object> obj) {
 	auto sObj = obj.lock();
 	if (!sObj)
 		return false;
@@ -141,7 +141,7 @@ bool Field::doStep(float stepMSec) {
 }
 
 bool Field::doRemoveStep() {
-	auto lastObject = remove_if(begin(objects), end(objects), [this](shared_ptr<ObjectBase> obj) -> bool{
+	auto lastObject = remove_if(begin(objects), end(objects), [this](shared_ptr<Object> obj) -> bool{
 		if (!obj->getRemove())
 			return false;
 
@@ -151,7 +151,7 @@ bool Field::doRemoveStep() {
 			if (!sb)
 				continue;
 
-			auto lastBehavior = remove_if(begin(behaviors), end(behaviors), [sb](shared_ptr<BehaviorBase> sb2) -> bool{
+			auto lastBehavior = remove_if(begin(behaviors), end(behaviors), [sb](shared_ptr<Behavior> sb2) -> bool{
 				return sb == sb2;
 			});
 			behaviors.erase(lastBehavior, cend(behaviors));

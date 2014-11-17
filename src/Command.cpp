@@ -1,12 +1,12 @@
 #include "stdafx.h"
-#include "CommandBase.h"
+#include "Command.h"
 
 
-CommandBase::CommandBase(std::weak_ptr<ObjectBase> caller, std::weak_ptr<ObjectBase> target) 
+Command::Command(std::weak_ptr<Object> caller, std::weak_ptr<Object> target) 
 	: caller(caller), target(target){
 }
 
-bool CommandBase::tryToExecute() {
+bool Command::tryToExecute() {
 	if (canExecute()) {
 		execute();
 		return true;
@@ -14,7 +14,7 @@ bool CommandBase::tryToExecute() {
 	return false;
 }
 
-bool CommandBase::canExecute() {
+bool Command::canExecute() {
 // 	ObjectInfo* info = Infos::getInstance().getObjectInfoBy(target->getName());
 // 	ObjectBase* commander = caller->getController()->getObject();
 // 	return info->canApplyCommand(getType(), commander->getName());

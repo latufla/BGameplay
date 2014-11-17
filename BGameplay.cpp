@@ -2,8 +2,8 @@
 //
 
 #include "stdafx.h"
-#include "src\ObjectBase.h"
-#include "src\BehaviorBase.h"
+#include "src\Object.h"
+#include "src\Behavior.h"
 #include "src\Field.h"
 #include "src\Factory.h"
 #include "CustomBehavior.h"
@@ -20,11 +20,11 @@ int _tmain(int argc, _TCHAR* argv[])
 	factory.registerBehaviorInfo< CustomBehaviorInfo, BehaviorInfo >("HealBehavior");
 	factory.registerBehaviorInfo< CustomBehaviorInfo, BehaviorInfo >("ResurrectBehavior");
 
-	factory.registerBehavior< CustomBehavior, BehaviorBase >("HitBehavior");
-	factory.registerBehavior< CustomBehavior, BehaviorBase >("HealBehavior");
-	factory.registerBehavior< CustomBehavior, BehaviorBase >("ResurrectBehavior");
+	factory.registerBehavior< CustomBehavior, Behavior >("HitBehavior");
+	factory.registerBehavior< CustomBehavior, Behavior >("HealBehavior");
+	factory.registerBehavior< CustomBehavior, Behavior >("ResurrectBehavior");
 
-	factory.registerCommand<CustomCommand, CommandBase>("CustomCommand");
+	factory.registerCommand<CustomCommand, Command>("CustomCommand");
 	// ---
 	Field field(0, factory);
 	

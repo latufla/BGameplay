@@ -2,15 +2,14 @@
 #include <memory>
 #include <vector>
 
-class BehaviorBase;
-enum BehaviorType;
+class Behavior;
 
-class ObjectBase {
+class Object {
 public:
-	ObjectBase() = delete;
-	ObjectBase(uint32_t id, std::string name);	
+	Object() = delete;
+	Object(uint32_t id, std::string name);	
 
-	virtual ~ObjectBase();
+	virtual ~Object();
 
 	uint32_t getId() const { return id; }
 	std::string getName() const { return name; }
@@ -19,8 +18,8 @@ public:
 	bool getRemove() const { return remove; }
 
 protected:
-	bool addBehavior(std::weak_ptr<BehaviorBase>);
-	bool removeBehavior(std::weak_ptr<BehaviorBase>);
+	bool addBehavior(std::weak_ptr<Behavior>);
+	bool removeBehavior(std::weak_ptr<Behavior>);
 
 	bool startBehaviors();
 	bool stopBehaviors();
@@ -28,12 +27,12 @@ protected:
 	bool pauseBehaviors();
 	bool resumeBehaviors();
 
-	std::vector<std::weak_ptr<BehaviorBase>> getBehaviors() const { return behaviors; }
+	std::vector<std::weak_ptr<Behavior>> getBehaviors() const { return behaviors; }
 
 	uint32_t id;
 	std::string name;
 
-	std::vector<std::weak_ptr<BehaviorBase>> behaviors;
+	std::vector<std::weak_ptr<Behavior>> behaviors;
 	
 	bool remove = false;
 

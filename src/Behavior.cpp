@@ -1,10 +1,10 @@
 #include "stdafx.h"
-#include "BehaviorBase.h"
+#include "Behavior.h"
 
 using std::string;
 using std::to_string;
 
-BehaviorBase::BehaviorBase(std::weak_ptr<BehaviorInfo> info, std::weak_ptr<ObjectBase> object)
+Behavior::Behavior(std::weak_ptr<BehaviorInfo> info, std::weak_ptr<Object> object)
 	: object(object) {
 
 	if (auto sInfo = info.lock()) {
@@ -14,37 +14,37 @@ BehaviorBase::BehaviorBase(std::weak_ptr<BehaviorInfo> info, std::weak_ptr<Objec
 }
 	
 
-bool BehaviorBase::start() {
+bool Behavior::start() {
 	enabled = true;
 	lifeTime = 0;
 
 	return true;
 }
 
-bool BehaviorBase::stop() {
+bool Behavior::stop() {
 	enabled = false;
 	return true;
 }
 
-bool BehaviorBase::pause() {
+bool Behavior::pause() {
 	enabled = false;
 	return true;
 }
 
-bool BehaviorBase::resume() {
+bool Behavior::resume() {
 	enabled = true;
 	return true;
 }
 
-bool BehaviorBase::tryDoStep(float stepSec) {
+bool Behavior::tryDoStep(float stepSec) {
 	return canDoStep() ? doStep(stepSec) : false;
 }
 
-bool BehaviorBase::canDoStep() {
+bool Behavior::canDoStep() {
 	return enabled;
 }
 
-bool BehaviorBase::doStep(float stepSec) {
+bool Behavior::doStep(float stepSec) {
 	lifeTime += stepSec;
 	return true;
 }

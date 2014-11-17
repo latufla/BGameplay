@@ -1,11 +1,11 @@
 #pragma once
-#include "src\BehaviorBase.h"
+#include "src\Behavior.h"
 #include "CustomCommand.h"
 
-class CustomBehavior : public BehaviorBase{
+class CustomBehavior : public Behavior{
 public:
-	CustomBehavior(std::weak_ptr<BehaviorInfo> info, std::weak_ptr<ObjectBase> obj) 
-		: BehaviorBase(info, obj) {
+	CustomBehavior(std::weak_ptr<BehaviorInfo> info, std::weak_ptr<Object> obj) 
+		: Behavior(info, obj) {
 	};
 
 protected:
