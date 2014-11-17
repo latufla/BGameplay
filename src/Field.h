@@ -9,7 +9,7 @@
 class Field {
 public:
 	Field() = default;
-	Field(uint32_t, std::shared_ptr<Factory>);
+	Field(uint32_t, Factory*);
 	
 	~Field();
 
@@ -39,6 +39,6 @@ private:
 	uint32_t initialObjectId = 0;
 	uint32_t nextObjectId = 0;
 
-	std::shared_ptr<Factory> factory;
+	Factory* factory;
 };
 

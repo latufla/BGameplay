@@ -4,7 +4,7 @@
 using std::string;
 using std::to_string;
 
-Behavior::Behavior(std::weak_ptr<BehaviorInfo> info, std::weak_ptr<Object> object, std::weak_ptr<Factory> factory)
+Behavior::Behavior(std::weak_ptr<BehaviorInfo> info, std::weak_ptr<Object> object, Factory* factory)
 	: object(object), factory(factory) {
 
 	if (auto sInfo = info.lock()) {

@@ -7,7 +7,7 @@ using std::weak_ptr;
 using std::make_shared;
 using std::remove_if;
 
-Field::Field(uint32_t initialObjectId, std::shared_ptr<Factory> factory) 
+Field::Field(uint32_t initialObjectId, Factory* factory) 
 	: initialObjectId(initialObjectId)
 	, nextObjectId(initialObjectId + 1)
 	, factory(factory) {
@@ -31,7 +31,7 @@ weak_ptr<Object> Field::addObject(std::weak_ptr<ObjectInfo> info) {
 	objects.push_back(obj);
 	
 	for (auto i : sInfo->behaviors) {
-		auto b = factory->create(i, obj, factory);
+		auto b = factory->create(i, obj);
 
 		auto it = find_if(begin(behaviors), end(behaviors), [&b](shared_ptr<Behavior> b2){
 			return b2->getPriority() < b->getPriority();

@@ -4,21 +4,15 @@
 
 class CustomBehavior : public Behavior{
 public:
-	CustomBehavior(std::weak_ptr<BehaviorInfo> info, std::weak_ptr<Object> obj, std::weak_ptr<Factory> factory) 
+	CustomBehavior(std::weak_ptr<BehaviorInfo> info, std::weak_ptr<Object> obj, Factory* factory) 
 		: Behavior(info, obj, factory) {
 	};
 
 protected:
 	bool doStep(float stepSec) override {
 		__super::doStep(stepSec);
-		
-		auto sFactory = factory.lock();
-		if (!sFactory)
-			return false;
-
-		CustomFactory* cFactory = (CustomFactory*)sFactory.get();
 	
-		auto cmd = sFactory->create(cFactory->CUSTOM_COMMAND, object, object);
+		auto cmd = factory->create(((CustomFactory*)factory)->CUSTOM_COMMAND, object, object);
 		return cmd->tryToExecute();
 	};
 };
