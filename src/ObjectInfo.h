@@ -9,6 +9,8 @@ public:
 	ObjectInfo() = default;
 	~ObjectInfo() = default;
 
+	bool canApplyCommand(std::string, std::string);
+
 	std::vector<std::shared_ptr<BehaviorInfo>> behaviors;
 };
 

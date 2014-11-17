@@ -19,6 +19,7 @@ public:
 	bool tryDoStep(float); // sec
 
 	std::string getName() const { return name; }
+
 	std::weak_ptr<ObjectBase> getObject() const { return object; }
 	uint32_t getPriority() const { return priority; }
 	bool getEnabled() const { return enabled; }
