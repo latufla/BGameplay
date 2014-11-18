@@ -9,7 +9,6 @@
 
 class Field {
 public:
-	Field() = default;
 	Field(std::weak_ptr<Infos> infos, Factory*);
 	
 	~Field();

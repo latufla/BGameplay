@@ -9,6 +9,10 @@
 #include "CustomBehaviorInfo.h"
 #include "CustomCommand.h"
 #include "CustomFactory.h"
+#include "CustomFieldInfo.h"
+#include "CustomField.h"
+#include "CustomObjectInfo.h"
+#include "CustomObject.h"
 
 
 int _tmain(int argc, _TCHAR* argv[])
@@ -16,11 +20,11 @@ int _tmain(int argc, _TCHAR* argv[])
 	CustomFactory factory;
 
 	// register all infos and derived classes
-	factory.registerFieldInfo< FieldInfo, FieldInfo >();
-	factory.registerField< Field, Field >(); 
+	factory.registerFieldInfo< CustomFieldInfo, FieldInfo >();
+	factory.registerField< CustomField, Field >(); 
 	
-	factory.registerObjectInfo< ObjectInfo, ObjectInfo >();
-	factory.registerObject< Object, Object >();
+	factory.registerObjectInfo< CustomObjectInfo, ObjectInfo >();
+	factory.registerObject< CustomObject, Object >();
 
 	factory.registerBehaviorInfo< CustomBehaviorInfo, BehaviorInfo >(factory.HIT_BEHAVIOR); // typically unique classes
 	factory.registerBehaviorInfo< CustomBehaviorInfo, BehaviorInfo >(factory.HEAL_BEHAVIOR);
