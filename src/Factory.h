@@ -6,8 +6,7 @@
 #include <unordered_map>
 #include "Command.h"
 #include "FieldInfo.h"
-
-class Infos;
+#include "Infos.h"
 
 template<class T, class P>
 std::shared_ptr<P> createInstance() {
@@ -15,8 +14,8 @@ std::shared_ptr<P> createInstance() {
 }
 
 template<class T, class P>
-std::shared_ptr<P> createInstance(std::weak_ptr<Infos> infos, Factory* factory) {
-	return std::make_shared<T>(infos, factory);
+std::shared_ptr<P> createInstance(Factory* factory) {
+	return std::make_shared<T>(factory);
 }
 
 template<class T, class P>
@@ -53,8 +52,8 @@ public:
 		fieldCreator = &createInstance < T, P > ;
 	}
 
-	std::shared_ptr<Field> createField(std::weak_ptr<Infos> infos) {
-		return fieldCreator(infos, this);
+	std::shared_ptr<Field> createField() {
+		return fieldCreator(this);
 	}
 
 
@@ -106,13 +105,20 @@ public:
 	std::shared_ptr<Command> createCommand(std::string name, std::weak_ptr<Object> caller, std::weak_ptr<Object> target) {
 		return nameToCommandCreator.at(name)(name, caller, target);
 	}
-
-
-private:
-	std::shared_ptr<FieldInfo>(*fieldInfoCreator)();
-	std::shared_ptr<Field>(*fieldCreator)(std::weak_ptr<Infos>, Factory*);
-
 	
+
+	void loadInfos() {
+		infos = std::make_shared<Infos>(this);
+	}
+
+	std::shared_ptr<Infos> getInfos() const { return infos; }
+	
+private:
+	std::shared_ptr<Infos> infos;
+
+	std::shared_ptr<FieldInfo>(*fieldInfoCreator)();
+	std::shared_ptr<Field>(*fieldCreator)(Factory*);
+
 	std::shared_ptr<ObjectInfo>(*objectInfoCreator)();
 	std::shared_ptr<Object>(*objectCreator)(uint32_t, std::weak_ptr<ObjectInfo>);
 

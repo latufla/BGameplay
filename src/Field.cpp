@@ -7,16 +7,13 @@ using std::weak_ptr;
 using std::make_shared;
 using std::remove_if;
 
-Field::Field(std::weak_ptr<Infos> infos, Factory* factory) 
+Field::Field(Factory* factory) 
 	: factory(factory) {
 	
-	auto sInfos = infos.lock();
-	if (!sInfos)
-		return; 
-
-	if (auto sInfo = sInfos->getFieldInfo().lock()) {
+	auto infos = factory->getInfos();
+	if (auto sInfo = infos->getFieldInfo().lock()) {
 		for (auto i : sInfo->items) {
-			addObject(i->id, sInfos->getObjectInfoBy(i->name));
+			addObject(i->id, infos->getObjectInfoBy(i->name));
 		}
 	}
 }

@@ -3,7 +3,8 @@
 #include "FieldInfo.h"
 #include "ObjectInfo.h"
 #include <unordered_map>
-#include "Factory.h"
+
+class Factory;
 
 class Infos {
 public:

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Infos.h"
+#include "Factory.h"
 
 Infos::Infos(Factory* factory) {
 	// TODO: fix hard code	

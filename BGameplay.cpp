@@ -34,9 +34,11 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	factory.registerCommand<CustomCommand, Command>(factory.CUSTOM_COMMAND);
 	// ---
-		
-	std::shared_ptr<Infos> infos = std::make_shared<Infos>(&factory);
-	std::shared_ptr<Field> field = factory.createField(infos);
+
+	factory.loadInfos();
+	// ---
+
+	std::shared_ptr<Field> field = factory.createField();
 
 	field->startBehaviors();
 	field->doStep(1.0f);
