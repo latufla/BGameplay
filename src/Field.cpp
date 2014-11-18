@@ -7,11 +7,18 @@ using std::weak_ptr;
 using std::make_shared;
 using std::remove_if;
 
-Field::Field(uint32_t initialObjectId, Factory* factory) 
-	: initialObjectId(initialObjectId)
-	, nextObjectId(initialObjectId + 1)
-	, factory(factory) {
+Field::Field(std::weak_ptr<Infos> infos, Factory* factory) 
+	: factory(factory) {
+	
+	auto sInfos = infos.lock();
+	if (!sInfos)
+		return; 
 
+	if (auto sInfo = sInfos->getFieldInfo().lock()) {
+		for (auto i : sInfo->items) {
+			addObject(i->id, sInfos->getObjectInfoBy(i->name));
+		}
+	}
 }
 
 Field::~Field() {
@@ -22,16 +29,16 @@ Field::~Field() {
 }
 
 
-weak_ptr<Object> Field::addObject(std::weak_ptr<ObjectInfo> info) {
+weak_ptr<Object> Field::addObject(uint32_t id, std::weak_ptr<ObjectInfo> info) {
 	auto sInfo = info.lock();
 	if (!sInfo)
 		throw std::exception("Field::addObject can`t add object");
 
-	shared_ptr<Object> obj = make_shared<Object>(nextObjectId, sInfo);
+	shared_ptr<Object> obj = factory->createObject(id, sInfo);
 	objects.push_back(obj);
 	
 	for (auto i : sInfo->behaviors) {
-		auto b = factory->create(i, obj);
+		auto b = factory->createBehavior(i, obj);
 
 		auto it = find_if(begin(behaviors), end(behaviors), [&b](shared_ptr<Behavior> b2){
 			return b2->getPriority() < b->getPriority();
@@ -40,8 +47,6 @@ weak_ptr<Object> Field::addObject(std::weak_ptr<ObjectInfo> info) {
 
 		obj->addBehavior(b);
 	}
-
-	nextObjectId++;
 	return weak_ptr<Object>(obj);
 }
 

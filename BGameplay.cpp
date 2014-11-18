@@ -15,7 +15,13 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	CustomFactory factory;
 
-	// register all info and behavior types from cfg 
+	// register all infos and derived classes
+	factory.registerFieldInfo< FieldInfo, FieldInfo >();
+	factory.registerField< Field, Field >(); 
+	
+	factory.registerObjectInfo< ObjectInfo, ObjectInfo >();
+	factory.registerObject< Object, Object >();
+
 	factory.registerBehaviorInfo< CustomBehaviorInfo, BehaviorInfo >(factory.HIT_BEHAVIOR); // typically unique classes
 	factory.registerBehaviorInfo< CustomBehaviorInfo, BehaviorInfo >(factory.HEAL_BEHAVIOR);
 
@@ -23,35 +29,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	factory.registerBehavior< CustomBehavior, Behavior >(factory.HEAL_BEHAVIOR);
 
 	factory.registerCommand<CustomCommand, Command>(factory.CUSTOM_COMMAND);
-	
-	factory.registerField< Field, Field >(factory.FIELD);
 	// ---
-
-	std::shared_ptr<Field> field = factory.create(factory.FIELD, 0);
-	
-	std::shared_ptr<ObjectInfo> damagerInfo = std::make_shared<ObjectInfo>();
-	damagerInfo->name = "damager";
-	
-	std::shared_ptr<BehaviorInfo> hit = factory.create(factory.HIT_BEHAVIOR);
-	hit->priority = 3;
-	damagerInfo->behaviors.push_back(hit);
-
-
-	std::shared_ptr<ObjectInfo> healerInfo = std::make_shared<ObjectInfo>();
-	healerInfo->name = "healer";
-
-	std::shared_ptr<BehaviorInfo> heal = factory.create(factory.HEAL_BEHAVIOR);
-	heal->priority = 1;
-	healerInfo->behaviors.push_back(heal);
-
-	std::vector<std::string> cmds{"healer"};
-	healerInfo->applicableCommands.emplace(factory.CUSTOM_COMMAND, cmds);
-	
-	auto damager = field->addObject(damagerInfo);
-	auto healer = field->addObject(healerInfo);
+		
+	std::shared_ptr<Infos> infos = std::make_shared<Infos>(&factory);
+	std::shared_ptr<Field> field = factory.createField(infos);
 
 	field->startBehaviors();
-	field->removeObject(damager);
 	field->doStep(1.0f);
 	field->doStep(1.0f);
 

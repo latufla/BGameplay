@@ -3,8 +3,6 @@
 
 class CustomFactory : public Factory{
 public:
-	const std::string FIELD = "Field";
-
 	const std::string HIT_BEHAVIOR = "HitBehavior";
 	const std::string HEAL_BEHAVIOR = "HealBehavior";
 

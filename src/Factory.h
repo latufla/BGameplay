@@ -5,6 +5,9 @@
 #include "Object.h"
 #include <unordered_map>
 #include "Command.h"
+#include "FieldInfo.h"
+
+class Infos;
 
 template<class T, class P>
 std::shared_ptr<P> createInstance() {
@@ -12,8 +15,13 @@ std::shared_ptr<P> createInstance() {
 }
 
 template<class T, class P>
-std::shared_ptr<P> createInstance(uint32_t initialId, Factory* factory) {
-	return std::make_shared<T>(initialId, factory);
+std::shared_ptr<P> createInstance(std::weak_ptr<Infos> infos, Factory* factory) {
+	return std::make_shared<T>(infos, factory);
+}
+
+template<class T, class P>
+std::shared_ptr<P> createInstance(uint32_t id, std::weak_ptr<ObjectInfo> info) {
+	return std::make_shared<T>(id, info);
 }
 
 template<class T, class P>
@@ -32,66 +40,96 @@ public:
 	~Factory() = default;
 
 	template<class T, class P>
-	void registerField(std::string name) {
-		nameToFieldInstance[name] = &createInstance < T, P > ;
+	void registerFieldInfo() {
+		fieldInfoCreator = &createInstance < T, P > ;
 	}
 
-	std::shared_ptr<Field> create(std::string name, uint32_t initialId) {
-		return nameToFieldInstance[name](initialId, this);
+	std::shared_ptr<FieldInfo> createFieldInfo() {
+		return fieldInfoCreator();
+	}
+
+	template<class T, class P>
+	void registerField() {
+		fieldCreator = &createInstance < T, P > ;
+	}
+
+	std::shared_ptr<Field> createField(std::weak_ptr<Infos> infos) {
+		return fieldCreator(infos, this);
+	}
+
+
+	template<class T, class P>
+	void registerObjectInfo() {
+		objectInfoCreator = &createInstance < T, P > ;
+	}
+
+	std::shared_ptr<ObjectInfo> createObjectInfo() {
+		return objectInfoCreator();
+	}
+
+	template<class T, class P>
+	void registerObject() {
+		objectCreator = &createInstance < T, P > ;
+	}
+
+	std::shared_ptr<Object> createObject(uint32_t id, std::weak_ptr<ObjectInfo> info) {
+		return objectCreator(id, info);
 	}
 
 
 	template<class T, class P>
 	void registerBehaviorInfo(std::string name) {
-		nameToBehaviorInfo[name] = &createInstance<T, P>;
+		nameToBehaviorInfoCreator[name] = &createInstance<T, P>;
 	}
 	
-	std::shared_ptr<BehaviorInfo> create(std::string name) {
-		auto res = nameToBehaviorInfo.at(name)();
+	std::shared_ptr<BehaviorInfo> createBehaviorInfo(std::string name) {
+		auto res = nameToBehaviorInfoCreator.at(name)();
 		res->name = name;
 		return res;
 	}
 	
 	template<class T, class P>
 	void registerBehavior(std::string name) {
-		nameToBehaviorInstance[name] = &createInstance<T, P>;
+		nameToBehaviorCreator[name] = &createInstance<T, P>;
 	}
 	
-	std::shared_ptr<Behavior> create(std::shared_ptr<BehaviorInfo> info, std::weak_ptr<Object> obj) {
-		return nameToBehaviorInstance.at(info->name)(info, obj, this);
+	std::shared_ptr<Behavior> createBehavior(std::shared_ptr<BehaviorInfo> info, std::weak_ptr<Object> obj) {
+		return nameToBehaviorCreator.at(info->name)(info, obj, this);
 	}
 
 
 	template<class T, class P>
 	void registerCommand(std::string name) {
-		nameToCommandInstance[name] = &createInstance < T, P > ;
+		nameToCommandCreator[name] = &createInstance < T, P > ;
 	}
 
-	std::shared_ptr<Command> create(std::string name, std::weak_ptr<Object> caller, std::weak_ptr<Object> target) {
-		return nameToCommandInstance.at(name)(name, caller, target);
+	std::shared_ptr<Command> createCommand(std::string name, std::weak_ptr<Object> caller, std::weak_ptr<Object> target) {
+		return nameToCommandCreator.at(name)(name, caller, target);
 	}
 
 
 private:
-	std::unordered_map <
-		std::string,
-		std::shared_ptr<Field>(*)(uint32_t, Factory*)
-	> nameToFieldInstance;
+	std::shared_ptr<FieldInfo>(*fieldInfoCreator)();
+	std::shared_ptr<Field>(*fieldCreator)(std::weak_ptr<Infos>, Factory*);
 
+	
+	std::shared_ptr<ObjectInfo>(*objectInfoCreator)();
+	std::shared_ptr<Object>(*objectCreator)(uint32_t, std::weak_ptr<ObjectInfo>);
 
+	
 	std::unordered_map <
 		std::string, 
-		std::shared_ptr<BehaviorInfo>(*)()> nameToBehaviorInfo;
+		std::shared_ptr<BehaviorInfo>(*)()> nameToBehaviorInfoCreator;
 
 	std::unordered_map<
 		std::string, 
 		std::shared_ptr<Behavior>(*)(std::shared_ptr<BehaviorInfo>, std::weak_ptr<Object>, Factory*)
-	> nameToBehaviorInstance;
+	> nameToBehaviorCreator;
 
 
 	std::unordered_map <
 		std::string,
 		std::shared_ptr<Command>(*)(std::string, std::weak_ptr<Object>, std::weak_ptr<Object>)
-	> nameToCommandInstance;
+	> nameToCommandCreator;
 };
 

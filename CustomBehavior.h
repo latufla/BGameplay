@@ -12,7 +12,7 @@ protected:
 	bool doStep(float stepSec) override {
 		__super::doStep(stepSec);
 	
-		auto cmd = factory->create(((CustomFactory*)factory)->CUSTOM_COMMAND, object, object);
+		auto cmd = factory->createCommand(((CustomFactory*)factory)->CUSTOM_COMMAND, object, object);
 		return cmd->tryToExecute();
 	};
 };
