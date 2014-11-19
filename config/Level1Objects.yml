@@ -1,0 +1,25 @@
+healer:
+ id: 0
+ behaviors:
+  - name: HealBehavior
+ applicableCommands:
+  - name: HealCommand
+    commanders: [healer]
+	
+damager:
+ id: 1
+ behaviors:
+  - name: HitBehavior
+ applicableCommands:
+  - name: HealCommand
+    commanders: [healer]
+  - name: HitCommand
+    commanders: [enemy]
+	
+enemy:
+ id: 2
+ behaviors:
+  - name: HitBehavior
+ applicableCommands:
+  - name: HitBehavior
+    commanders: [damager]

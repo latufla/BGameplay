@@ -7,31 +7,7 @@
 #include "Command.h"
 #include "FieldInfo.h"
 #include "Infos.h"
-
-template<class T, class P>
-std::shared_ptr<P> createInstance() {
-	return std::make_shared<T>();
-}
-
-template<class T, class P>
-std::shared_ptr<P> createInstance(Factory* factory) {
-	return std::make_shared<T>(factory);
-}
-
-template<class T, class P>
-std::shared_ptr<P> createInstance(uint32_t id, std::weak_ptr<ObjectInfo> info) {
-	return std::make_shared<T>(id, info);
-}
-
-template<class T, class P>
-std::shared_ptr<P> createInstance(std::string name, std::weak_ptr<Object> caller, std::weak_ptr<Object> target) {
-	return std::make_shared<T>(name, caller, target);
-}
-
-template<class T, class P>
-std::shared_ptr<P> createInstance(std::shared_ptr<BehaviorInfo> info, std::weak_ptr<Object> carrier, Factory* factory) {
-	return std::make_shared<T>(info, carrier, factory);
-}
+#include <fstream>
 
 class Factory {
 public:
@@ -39,78 +15,38 @@ public:
 	~Factory() = default;
 
 	template<class T, class P>
-	void registerFieldInfo() {
-		fieldInfoCreator = &createInstance < T, P > ;
-	}
-
-	std::shared_ptr<FieldInfo> createFieldInfo() {
-		return fieldInfoCreator();
-	}
+	void registerFieldInfo();
+	std::shared_ptr<FieldInfo> createFieldInfo();
 
 	template<class T, class P>
-	void registerField() {
-		fieldCreator = &createInstance < T, P > ;
-	}
-
-	std::shared_ptr<Field> createField() {
-		return fieldCreator(this);
-	}
+	void registerField();
+	std::shared_ptr<Field> createField();
 
 
 	template<class T, class P>
-	void registerObjectInfo() {
-		objectInfoCreator = &createInstance < T, P > ;
-	}
-
-	std::shared_ptr<ObjectInfo> createObjectInfo() {
-		return objectInfoCreator();
-	}
+	void registerObjectInfo();
+	std::shared_ptr<ObjectInfo> createObjectInfo();
 
 	template<class T, class P>
-	void registerObject() {
-		objectCreator = &createInstance < T, P > ;
-	}
-
-	std::shared_ptr<Object> createObject(uint32_t id, std::weak_ptr<ObjectInfo> info) {
-		return objectCreator(id, info);
-	}
+	void registerObject();
+	std::shared_ptr<Object> createObject(uint32_t, std::weak_ptr<ObjectInfo>);
 
 
 	template<class T, class P>
-	void registerBehaviorInfo(std::string name) {
-		nameToBehaviorInfoCreator[name] = &createInstance<T, P>;
-	}
-	
-	std::shared_ptr<BehaviorInfo> createBehaviorInfo(std::string name) {
-		auto res = nameToBehaviorInfoCreator.at(name)();
-		res->name = name;
-		return res;
-	}
+	void registerBehaviorInfo(std::string);	
+	std::shared_ptr<BehaviorInfo> createBehaviorInfo(std::string);
 	
 	template<class T, class P>
-	void registerBehavior(std::string name) {
-		nameToBehaviorCreator[name] = &createInstance<T, P>;
-	}
-	
-	std::shared_ptr<Behavior> createBehavior(std::shared_ptr<BehaviorInfo> info, std::weak_ptr<Object> obj) {
-		return nameToBehaviorCreator.at(info->name)(info, obj, this);
-	}
+	void registerBehavior(std::string);
+	std::shared_ptr<Behavior> createBehavior(std::shared_ptr<BehaviorInfo>, std::weak_ptr<Object>);
 
 
 	template<class T, class P>
-	void registerCommand(std::string name) {
-		nameToCommandCreator[name] = &createInstance < T, P > ;
-	}
-
-	std::shared_ptr<Command> createCommand(std::string name, std::weak_ptr<Object> caller, std::weak_ptr<Object> target) {
-		return nameToCommandCreator.at(name)(name, caller, target);
-	}
+	void registerCommand(std::string);
+	std::shared_ptr<Command> createCommand(std::string, std::weak_ptr<Object>, std::weak_ptr<Object>);
 	
 
-	void loadInfos() {
-		infos = std::make_shared<Infos>(this);
-	}
-
+	void parseInfos(std::ifstream&, std::ifstream&);
 	std::shared_ptr<Infos> getInfos() const { return infos; }
 	
 private:
@@ -139,3 +75,67 @@ private:
 	> nameToCommandCreator;
 };
 
+
+template<class T, class P>
+std::shared_ptr<P> createInstance() {
+	return std::make_shared<T>();
+}
+
+template<class T, class P>
+std::shared_ptr<P> createInstance(Factory* factory) {
+	return std::make_shared<T>(factory);
+}
+
+template<class T, class P>
+std::shared_ptr<P> createInstance(uint32_t id, std::weak_ptr<ObjectInfo> info) {
+	return std::make_shared<T>(id, info);
+}
+
+template<class T, class P>
+std::shared_ptr<P> createInstance(std::string name, std::weak_ptr<Object> caller, std::weak_ptr<Object> target) {
+	return std::make_shared<T>(name, caller, target);
+}
+
+template<class T, class P>
+std::shared_ptr<P> createInstance(std::shared_ptr<BehaviorInfo> info, std::weak_ptr<Object> carrier, Factory* factory) {
+	return std::make_shared<T>(info, carrier, factory);
+}
+
+
+template<class T, class P>
+void Factory::registerFieldInfo() {
+	fieldInfoCreator = &createInstance < T, P > ;
+}
+
+template<class T, class P>
+void Factory::registerField() {
+	fieldCreator = &createInstance < T, P > ;
+}
+
+
+template<class T, class P>
+void Factory::registerObjectInfo() {
+	objectInfoCreator = &createInstance < T, P > ;
+}
+
+template<class T, class P>
+void Factory::registerObject() {
+	objectCreator = &createInstance < T, P > ;
+}
+
+
+template<class T, class P>
+void Factory::registerBehaviorInfo(std::string name) {
+	nameToBehaviorInfoCreator[name] = &createInstance < T, P > ;
+}
+
+template<class T, class P>
+void Factory::registerBehavior(std::string name) {
+	nameToBehaviorCreator[name] = &createInstance < T, P > ;
+}
+
+
+template<class T, class P>
+void Factory::registerCommand(std::string name) {
+	nameToCommandCreator[name] = &createInstance < T, P > ;
+}

@@ -13,6 +13,7 @@
 #include "CustomField.h"
 #include "CustomObjectInfo.h"
 #include "CustomObject.h"
+#include <fstream>
 
 
 int _tmain(int argc, _TCHAR* argv[])
@@ -35,7 +36,16 @@ int _tmain(int argc, _TCHAR* argv[])
 	factory.registerCommand<CustomCommand, Command>(factory.CUSTOM_COMMAND);
 	// ---
 
-	factory.loadInfos();
+
+	std::ifstream level, objects;
+	level.open("config/Level1.yml");
+	objects.open("config/Level1Objects.yml");
+	if (!level.is_open() || !objects.is_open())
+		return 0;
+
+	factory.parseInfos(level, objects);
+	level.close();
+	objects.close();
 	// ---
 
 	std::shared_ptr<Field> field = factory.createField();

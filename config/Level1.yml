@@ -1,0 +1,3 @@
+ - {id: 0, name: damager}
+ - {id: 1, name: healer}
+ - {id: 2, name: enemy}
