@@ -20,7 +20,7 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	CustomFactory factory;
 
-	// register all infos and derived classes
+	// ONCE, register all infos and derived classes
 	factory.registerFieldInfo< CustomFieldInfo, FieldInfo >();
 	factory.registerField< CustomField, Field >(); 
 	
@@ -36,7 +36,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	factory.registerCommand<CustomCommand, Command>(factory.CUSTOM_COMMAND);
 	// ---
 
-
+	// EACH LEVEL, load infos
 	std::ifstream level, objects;
 	level.open("config/Level1.yml");
 	objects.open("config/Level1Objects.yml");

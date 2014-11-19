@@ -4,11 +4,9 @@
 #include "ObjectInfo.h"
 #include <unordered_map>
 
-class Factory;
-
 class Infos {
 public:
-	Infos(Factory*);
+	Infos(std::shared_ptr<FieldInfo>, std::unordered_map<std::string, std::shared_ptr<ObjectInfo>>);
 	~Infos() = default;
 
 	std::weak_ptr<FieldInfo> getFieldInfo() { return fieldInfo; }

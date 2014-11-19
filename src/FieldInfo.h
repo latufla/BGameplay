@@ -8,11 +8,9 @@ public:
 	FieldInfo() = default;
 	~FieldInfo() = default;
 
-	struct Item {
-		uint32_t id;
-		std::string name;
+	class FieldItemInfo : public Info{
 	};
 
-	std::vector<std::shared_ptr<Item>> items;
+	std::vector<std::shared_ptr<FieldItemInfo>> items;
 };
 

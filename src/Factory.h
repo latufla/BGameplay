@@ -8,6 +8,7 @@
 #include "FieldInfo.h"
 #include "Infos.h"
 #include <fstream>
+#include "yaml-cpp/yaml.h"
 
 class Factory {
 public:
@@ -50,6 +51,10 @@ public:
 	std::shared_ptr<Infos> getInfos() const { return infos; }
 	
 private:
+	std::shared_ptr<BehaviorInfo> parseBehaviorInfo(const YAML::Node& b);
+	std::vector<std::string> parseApplicableCommandInfo(const YAML::Node& b);
+	void updateInfoWithPrimitives(const YAML::Node& b, Info*);
+
 	std::shared_ptr<Infos> infos;
 
 	std::shared_ptr<FieldInfo>(*fieldInfoCreator)();
@@ -58,7 +63,6 @@ private:
 	std::shared_ptr<ObjectInfo>(*objectInfoCreator)();
 	std::shared_ptr<Object>(*objectCreator)(uint32_t, std::weak_ptr<ObjectInfo>);
 
-	
 	std::unordered_map <
 		std::string, 
 		std::shared_ptr<BehaviorInfo>(*)()> nameToBehaviorInfoCreator;
@@ -138,4 +142,36 @@ void Factory::registerBehavior(std::string name) {
 template<class T, class P>
 void Factory::registerCommand(std::string name) {
 	nameToCommandCreator[name] = &createInstance < T, P > ;
+}
+
+template<typename T> bool is(const YAML::Node& n) {
+	try {
+		T val;
+		n >> val;
+		return true;
+	}
+	catch (const YAML::InvalidScalar& e) { e; }
+
+	return false;
+}
+
+template<typename T> bool is(const YAML::Node& n, std::string name) {
+	const YAML::Node* vNode = n.FindValue(name);
+	if (vNode == nullptr)
+		return false;
+
+	try {
+		T val;
+		*vNode >> val;
+		return true;
+	}
+	catch (const YAML::InvalidScalar& e) { e; }
+
+	return false;
+}
+
+template<typename T> T get(const YAML::Node& n) {
+	T val;
+	n >> val;
+	return val;
 }
