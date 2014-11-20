@@ -1,9 +1,11 @@
 #include "SharedHeaders.h"
+#include <algorithm>
 #include "Object.h"
 #include "Behavior.h"
-#include <algorithm>
 
-Object::Object(uint32_t id, std::weak_ptr<ObjectInfo> info) 
+using std::weak_ptr;
+
+Object::Object(uint32_t id, weak_ptr<ObjectInfo> info) 
 	: id(id), info(info){
 
 	if(auto sInfo = info.lock())
@@ -14,12 +16,12 @@ Object::~Object() {
 	stopBehaviors();
 }
 
-bool Object::addBehavior(std::weak_ptr<Behavior> b) {
+bool Object::addBehavior(weak_ptr<Behavior> b) {
 	auto sb = b.lock();
 	if (!sb)
 		return false;
 	
-	auto it = find_if(cbegin(behaviors), cend(behaviors), [sb](std::weak_ptr<Behavior> b2){
+	auto it = find_if(cbegin(behaviors), cend(behaviors), [sb](weak_ptr<Behavior> b2){
 		if (auto sb2 = b2.lock())
 			return sb == sb2;
 
@@ -32,12 +34,12 @@ bool Object::addBehavior(std::weak_ptr<Behavior> b) {
 	return true;
 }
 
-bool Object::removeBehavior(std::weak_ptr<Behavior> b) {
+bool Object::removeBehavior(weak_ptr<Behavior> b) {
 	auto sb = b.lock();
 	if (!sb)
 		return false;
 
-	auto it = find_if(cbegin(behaviors), cend(behaviors), [sb](std::weak_ptr<Behavior> b2){
+	auto it = find_if(cbegin(behaviors), cend(behaviors), [sb](weak_ptr<Behavior> b2){
 		if (auto sb2 = b2.lock())
 			return sb == sb2;
 
