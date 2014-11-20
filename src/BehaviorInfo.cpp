@@ -1,3 +1,3 @@
-#include "stdafx.h"
+#include "SharedHeaders.h"
 #include "BehaviorInfo.h"
 

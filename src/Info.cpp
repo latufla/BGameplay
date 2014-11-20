@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "SharedHeaders.h"
 #include "Info.h"
 
 void Info::update(std::string prop, int32_t val) {

@@ -1,7 +1,7 @@
 // BGameplay.cpp : Defines the entry point for the console application.
 //
 
-#include "stdafx.h"
+#include "src/SharedHeaders.h"
 #include "src\Object.h"
 #include "src\Behavior.h"
 #include "src\Field.h"

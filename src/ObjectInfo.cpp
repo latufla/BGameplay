@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "SharedHeaders.h"
 #include "ObjectInfo.h"
 
 bool ObjectInfo::canApplyCommand(std::string command, std::string commander) {

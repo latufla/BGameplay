@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "SharedHeaders.h"
 #include "Object.h"
 #include "Behavior.h"
 #include <algorithm>
