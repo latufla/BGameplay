@@ -1,7 +1,9 @@
 #include "SharedHeaders.h"
 #include "ObjectInfo.h"
 
-bool ObjectInfo::canApplyCommand(std::string command, std::string commander) {
+using std::string;
+
+bool ObjectInfo::canApplyCommand(string command, string commander) {
 	auto it = applicableCommands.find(command);
 	if (it == cend(applicableCommands))
 		return false;
