@@ -1,4 +1,6 @@
 #pragma once
+#pragma warning( disable : 4996) // TODO: why yaml cpp?
+
 #include <memory>
 #include <vector>
 #include <unordered_map>
