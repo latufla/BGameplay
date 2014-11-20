@@ -1,15 +1,15 @@
 #pragma once
 #include <memory>
-#include "Behavior.h"
+#include "Object.h"
 
 class Command {
 public:
 	Command() = delete;
-	Command(std::string name, std::weak_ptr<Object>, std::weak_ptr<Object>);
+	Command(std::string name, std::weak_ptr<Object> caller, std::weak_ptr<Object> target);
 
 	~Command() = default;
 
-	virtual bool tryToExecute();
+	bool tryToExecute();
 
 	std::string getName() const { return name; }
 

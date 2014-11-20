@@ -1,8 +1,10 @@
 #include "SharedHeaders.h"
 #include "Command.h"
 
+using std::string;
+using std::weak_ptr;
 
-Command::Command(std::string name, std::weak_ptr<Object> caller, std::weak_ptr<Object> target) 
+Command::Command(string name, weak_ptr<Object> caller, weak_ptr<Object> target) 
 	: name(name), caller(caller), target(target) {
 }
 
