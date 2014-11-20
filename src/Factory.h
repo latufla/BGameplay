@@ -1,14 +1,13 @@
 #pragma once
-#include "Info.h"
 #include <memory>
+#include <unordered_map>
+#include <fstream>
 #include "Behavior.h"
 #include "Object.h"
-#include <unordered_map>
 #include "Command.h"
 #include "FieldInfo.h"
+#include "Info.h" 
 #include "Infos.h"
-#include <fstream>
-#include "yaml-cpp/yaml.h"
 
 class Factory {
 public:
@@ -30,31 +29,27 @@ public:
 
 	template<class T, class P>
 	void registerObject();
-	std::shared_ptr<Object> createObject(uint32_t, std::weak_ptr<ObjectInfo>);
+	std::shared_ptr<Object> createObject(uint32_t id, std::weak_ptr<ObjectInfo>);
 
 
 	template<class T, class P>
-	void registerBehaviorInfo(std::string);	
-	std::shared_ptr<BehaviorInfo> createBehaviorInfo(std::string);
+	void registerBehaviorInfo(std::string name);	
+	std::shared_ptr<BehaviorInfo> createBehaviorInfo(std::string name);
 	
 	template<class T, class P>
-	void registerBehavior(std::string);
+	void registerBehavior(std::string name);
 	std::shared_ptr<Behavior> createBehavior(std::shared_ptr<BehaviorInfo>, std::weak_ptr<Object>);
 
 
 	template<class T, class P>
-	void registerCommand(std::string);
-	std::shared_ptr<Command> createCommand(std::string, std::weak_ptr<Object>, std::weak_ptr<Object>);
+	void registerCommand(std::string name);
+	std::shared_ptr<Command> createCommand(std::string name, std::weak_ptr<Object> caller, std::weak_ptr<Object> target);
 	
 
-	void parseInfos(std::ifstream&, std::ifstream&);
+	void parseInfos(std::ifstream& level, std::ifstream& objects);
 	std::shared_ptr<Infos> getInfos() const { return infos; }
 	
 private:
-	std::shared_ptr<BehaviorInfo> parseBehaviorInfo(const YAML::Node& b);
-	std::vector<std::string> parseApplicableCommandInfo(const YAML::Node& b);
-	void updateInfoWithPrimitives(const YAML::Node& b, Info*);
-
 	std::shared_ptr<Infos> infos;
 
 	std::shared_ptr<FieldInfo>(*fieldInfoCreator)();
@@ -142,36 +137,4 @@ void Factory::registerBehavior(std::string name) {
 template<class T, class P>
 void Factory::registerCommand(std::string name) {
 	nameToCommandCreator[name] = &createInstance < T, P > ;
-}
-
-template<typename T> bool is(const YAML::Node& n) {
-	try {
-		T val;
-		n >> val;
-		return true;
-	}
-	catch (const YAML::InvalidScalar& e) { e; }
-
-	return false;
-}
-
-template<typename T> bool is(const YAML::Node& n, std::string name) {
-	const YAML::Node* vNode = n.FindValue(name);
-	if (vNode == nullptr)
-		return false;
-
-	try {
-		T val;
-		*vNode >> val;
-		return true;
-	}
-	catch (const YAML::InvalidScalar& e) { e; }
-
-	return false;
-}
-
-template<typename T> T get(const YAML::Node& n) {
-	T val;
-	n >> val;
-	return val;
 }
