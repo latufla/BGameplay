@@ -6,9 +6,9 @@ public:
 	
 	int32_t id;
 	std::string name;
-	
-	virtual void update(std::string, int32_t);
-	virtual void update(std::string, float);
-	virtual void update(std::string, std::string);
+
+	virtual void update(std::string prop, int32_t val);
+	virtual void update(std::string prop, float val);
+	virtual void update(std::string prop, std::string val);
 };
 

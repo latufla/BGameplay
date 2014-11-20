@@ -66,6 +66,7 @@ void Factory::parseInfos(ifstream& level, ifstream& objects) {
 		i.first() >> info->name;
 
 		const Node& item = i.second();
+		updateInfoWithPrimitives(item, info.get());
 		for (auto j = item.begin(); j != item.end(); ++j) {
 			string nName = get<string>(j.first());
 			const Node& val = j.second();
@@ -80,13 +81,10 @@ void Factory::parseInfos(ifstream& level, ifstream& objects) {
 					string bName = get<string>((*s)["name"]);
 					info->applicableCommands.emplace(bName, b);
 				}
-			} else {
-				updateInfoWithPrimitives(val, info.get());
 			}
 		}
 		nameToObjectInfo.emplace(info->name, info);
 	}
-
 
 	infos = std::make_shared<Infos>(fieldInfo, nameToObjectInfo);
 }
@@ -98,7 +96,7 @@ std::shared_ptr<BehaviorInfo> Factory::parseBehaviorInfo(const Node& b) {
 	return info;
 }
 
-vector<string> Factory::parseApplicableCommandInfo(const YAML::Node& b) {
+vector<string> Factory::parseApplicableCommandInfo(const Node& b) {
 	vector<string> res;
 	const Node& commanders = b["commanders"];
 	for (auto i = commanders.begin(); i != commanders.end(); ++i) {
@@ -109,15 +107,15 @@ vector<string> Factory::parseApplicableCommandInfo(const YAML::Node& b) {
 
 void Factory::updateInfoWithPrimitives(const YAML::Node& b, Info* outInfo) {
 	for (auto it = b.begin(); it != b.end(); ++it) {
-		string pName;
-		it.first() >> pName;
+		string prop;
+		it.first() >> prop;
 
 		const Node& val = it.second();
-		if (is<int>(val))
-			outInfo->update(pName, get<int>(val));
-		if (is<float>(val))
-			outInfo->update(pName, get<float>(val));
-		if (is<string>(val))
-			outInfo->update(pName, get<string>(val));
+		if(is<int32_t>(val))
+			outInfo->update(prop, get<int32_t>(val));
+		else if (is<float>(val))
+			outInfo->update(prop, get<float>(val));
+		else if (is<string>(val))
+			outInfo->update(prop, get<string>(val));
 	}
 }

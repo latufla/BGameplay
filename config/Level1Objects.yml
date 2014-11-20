@@ -2,6 +2,7 @@ healer:
  id: 0
  behaviors:
   - name: HealBehavior
+    priority: 1
  applicableCommands:
   - name: HealCommand
     commanders: [healer]
@@ -10,6 +11,7 @@ damager:
  id: 1
  behaviors:
   - name: HitBehavior
+    priority: 2
  applicableCommands:
   - name: HealCommand
     commanders: [healer]
@@ -20,6 +22,7 @@ enemy:
  id: 2
  behaviors:
   - name: HitBehavior
+    priority: 2
  applicableCommands:
   - name: HitBehavior
     commanders: [damager]
