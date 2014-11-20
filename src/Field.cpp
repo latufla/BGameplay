@@ -6,6 +6,7 @@ using std::shared_ptr;
 using std::weak_ptr;
 using std::make_shared;
 using std::remove_if;
+using std::exception;
 
 Field::Field(Factory* factory) 
 	: factory(factory) {
@@ -13,7 +14,7 @@ Field::Field(Factory* factory)
 	auto infos = factory->getInfos();
 	if (auto sInfo = infos->getFieldInfo().lock()) {
 		for (auto i : sInfo->items) {
-			addObject(i->id, infos->getObjectInfoBy(i->name));
+			addObject(i);
 		}
 	}
 }
@@ -26,10 +27,19 @@ Field::~Field() {
 }
 
 
-weak_ptr<Object> Field::addObject(uint32_t id, std::weak_ptr<ObjectInfo> info) {
+weak_ptr<Object> Field::addObject(weak_ptr<FieldInfo::FieldItemInfo> itemInfo) {
+	auto sItemInfo = itemInfo.lock();
+	if(!sItemInfo)
+		throw exception("Field::addObject can`t add object");
+
+	auto infos = factory->getInfos();
+	return addObject(sItemInfo->id, infos->getObjectInfoBy(sItemInfo->name));
+}
+
+weak_ptr<Object> Field::addObject(uint32_t id, weak_ptr<ObjectInfo> info) {
 	auto sInfo = info.lock();
 	if (!sInfo)
-		throw std::exception("Field::addObject can`t add object");
+		throw exception("Field::addObject can`t add object");
 
 	shared_ptr<Object> obj = factory->createObject(id, sInfo);
 	objects.push_back(obj);
@@ -47,7 +57,7 @@ weak_ptr<Object> Field::addObject(uint32_t id, std::weak_ptr<ObjectInfo> info) {
 	return weak_ptr<Object>(obj);
 }
 
-bool Field::removeObject(std::weak_ptr<Object> obj, bool onNextStep) {
+bool Field::removeObject(weak_ptr<Object> obj, bool onNextStep) {
 	auto sObj = obj.lock();
 	if (!sObj)
 		return false;
@@ -69,7 +79,7 @@ bool Field::startBehaviors() {
 	return res;
 }
 
-bool Field::startBehaviors(std::weak_ptr<Object> obj) {
+bool Field::startBehaviors(weak_ptr<Object> obj) {
 	auto sObj = obj.lock();
 	if (!sObj)
 		return false;
@@ -87,7 +97,7 @@ bool Field::stopBehaviors() {
 	return res;
 }
 
-bool Field::stopBehaviors(std::weak_ptr<Object> obj) {
+bool Field::stopBehaviors(weak_ptr<Object> obj) {
 	auto sObj = obj.lock();
 	if (!sObj)
 		return false;
@@ -105,7 +115,7 @@ bool Field::pauseBehaviors() {
 	return res;
 }
 
-bool Field::pauseBehaviors(std::weak_ptr<Object> obj) {
+bool Field::pauseBehaviors(weak_ptr<Object> obj) {
 	auto sObj = obj.lock();
 	if (!sObj)
 		return false;
@@ -123,7 +133,7 @@ bool Field::resumeBehaviors() {
 	return res;
 }
 
-bool Field::resumeBehaviors(std::weak_ptr<Object> obj) {
+bool Field::resumeBehaviors(weak_ptr<Object> obj) {
 	auto sObj = obj.lock();
 	if (!sObj)
 		return false;
@@ -132,10 +142,10 @@ bool Field::resumeBehaviors(std::weak_ptr<Object> obj) {
 }
 
 
-bool Field::doStep(float stepMSec) {
+bool Field::doStep(float stepSec) {
 	bool res = true;
 	for (auto i : behaviors) {
-		bool sc = i->tryDoStep(stepMSec);
+		bool sc = i->tryDoStep(stepSec);
 		res = res && sc;
 	}
 	doRemoveStep();

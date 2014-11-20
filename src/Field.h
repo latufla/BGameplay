@@ -1,20 +1,17 @@
 #pragma once
 #include <memory>
-#include "Object.h"
-#include "ObjectInfo.h"
 #include <vector>
 #include <unordered_map>
 #include "Factory.h"
 #include "Infos.h"
+#include "Object.h"
+#include "ObjectInfo.h"
 
 class Field {
 public:
 	Field(Factory*);
 	
-	~Field();
-
-	std::weak_ptr<Object> addObject(uint32_t, std::weak_ptr<ObjectInfo>);
-	bool removeObject(std::weak_ptr<Object>, bool = false);
+	virtual ~Field();
 
 	bool startBehaviors();
 	bool startBehaviors(std::weak_ptr<Object>);
@@ -28,9 +25,13 @@ public:
 	bool resumeBehaviors();
 	bool resumeBehaviors(std::weak_ptr<Object>);
 
-	bool doStep(float); // sec
+	virtual bool doStep(float stepSec);
 
-private:
+protected:
+	virtual std::weak_ptr<Object> addObject(std::weak_ptr<FieldInfo::FieldItemInfo>);
+	std::weak_ptr<Object> addObject(uint32_t id, std::weak_ptr<ObjectInfo> info);
+	bool removeObject(std::weak_ptr<Object>, bool onNextStep = false);
+
 	bool doRemoveStep();
 
 	std::vector<std::shared_ptr<Object>> objects;
