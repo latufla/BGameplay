@@ -1,10 +1,13 @@
 // BGameplay.cpp : Defines the entry point for the console application.
 //
 
+#include <fstream>
+
 #include "src/SharedHeaders.h"
-#include "src\Object.h"
-#include "src\Behavior.h"
-#include "src\Field.h"
+#include "src/Object.h"
+#include "src/Behavior.h"
+#include "src/Field.h"
+
 #include "CustomBehavior.h"
 #include "CustomBehaviorInfo.h"
 #include "CustomCommand.h"
@@ -13,7 +16,6 @@
 #include "CustomField.h"
 #include "CustomObjectInfo.h"
 #include "CustomObject.h"
-#include <fstream>
 
 
 int _tmain(int argc, _TCHAR* argv[])
@@ -22,8 +24,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	// ONCE, register all infos and derived classes
 	factory.registerFieldInfo< CustomFieldInfo, FieldInfo >();
-	factory.registerField< CustomField, Field >(); 
-	
+	factory.registerField< CustomField, Field >();
+
 	factory.registerObjectInfo< CustomObjectInfo, ObjectInfo >();
 	factory.registerObject< CustomObject, Object >();
 
@@ -40,7 +42,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	std::ifstream level, objects;
 	level.open("config/Level1.yml");
 	objects.open("config/Level1Objects.yml");
-	if (!level.is_open() || !objects.is_open())
+	if(!level.is_open() || !objects.is_open())
 		return 0;
 
 	factory.parseInfos(level, objects);

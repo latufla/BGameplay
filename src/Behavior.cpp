@@ -1,11 +1,10 @@
 #include "SharedHeaders.h"
 #include "Behavior.h"
 
-using std::string;
-using std::to_string;
+using std::weak_ptr;
 
-Behavior::Behavior(std::weak_ptr<BehaviorInfo> info, std::weak_ptr<Object> object, Factory* factory)
-	: object(object), factory(factory) {
+Behavior::Behavior(weak_ptr<BehaviorInfo> info, weak_ptr<Object> object)
+	: object(object){
 
 	if (auto sInfo = info.lock()) {
 		name = sInfo->name;

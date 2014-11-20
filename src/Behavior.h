@@ -8,9 +8,9 @@ class Factory;
 class Behavior {
 public:
 	Behavior() = delete;
-	Behavior(std::weak_ptr<BehaviorInfo>, std::weak_ptr<Object>, Factory*);
+	Behavior(std::weak_ptr<BehaviorInfo>, std::weak_ptr<Object>);
 
-	virtual ~Behavior() {};
+	~Behavior() = default;
 
 	virtual bool start();
 	virtual bool stop();
@@ -18,7 +18,7 @@ public:
 	virtual bool pause();
 	virtual bool resume();
 
-	bool tryDoStep(float); // sec
+	bool tryDoStep(float stepSec);
 
 	std::string getName() const { return name; }
 
@@ -27,7 +27,7 @@ public:
 	bool getEnabled() const { return enabled; }
 
 protected:
-	virtual bool doStep(float);
+	virtual bool doStep(float stepSec);
 	virtual bool canDoStep();
 
 	std::string name;
@@ -36,7 +36,5 @@ protected:
 	
 	float lifeTime = 0.0f;
 	bool enabled = false;
-
-	Factory* factory;
 };
 
