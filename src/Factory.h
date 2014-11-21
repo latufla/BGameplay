@@ -38,7 +38,7 @@ public:
 	
 	template<class T, class P>
 	void registerBehavior(std::string name);
-	std::shared_ptr<Behavior> createBehavior(std::shared_ptr<BehaviorInfo>, std::weak_ptr<Object>);
+	std::shared_ptr<Behavior> createBehavior(std::shared_ptr<BehaviorInfo>, std::weak_ptr<Object>, Field*);
 
 
 	template<class T, class P>
@@ -64,7 +64,7 @@ private:
 
 	std::unordered_map<
 		std::string, 
-		std::shared_ptr<Behavior>(*)(std::shared_ptr<BehaviorInfo>, std::weak_ptr<Object>, Factory*)
+		std::shared_ptr<Behavior>(*)(std::shared_ptr<BehaviorInfo>, std::weak_ptr<Object>, Field*, Factory*)
 	> nameToBehaviorCreator;
 
 
@@ -96,8 +96,8 @@ std::shared_ptr<P> createInstance(std::string name, std::weak_ptr<Object> caller
 }
 
 template<class T, class P>
-std::shared_ptr<P> createInstance(std::shared_ptr<BehaviorInfo> info, std::weak_ptr<Object> carrier, Factory* factory) {
-	return std::make_shared<T>(info, carrier, factory);
+std::shared_ptr<P> createInstance(std::shared_ptr<BehaviorInfo> info, std::weak_ptr<Object> carrier, Field* field, Factory* factory) {
+	return std::make_shared<T>(info, carrier, field, factory);
 }
 
 

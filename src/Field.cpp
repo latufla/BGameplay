@@ -45,7 +45,7 @@ weak_ptr<Object> Field::addObject(uint32_t id, weak_ptr<ObjectInfo> info) {
 	objects.push_back(obj);
 	
 	for (auto i : sInfo->behaviors) {
-		auto b = factory->createBehavior(i, obj);
+		auto b = factory->createBehavior(i, obj, this);
 
 		auto it = find_if(begin(behaviors), end(behaviors), [&b](shared_ptr<Behavior> b2){
 			return b2->getPriority() < b->getPriority();

@@ -3,8 +3,8 @@
 
 using std::weak_ptr;
 
-Behavior::Behavior(weak_ptr<BehaviorInfo> info, weak_ptr<Object> object)
-	: object(object){
+Behavior::Behavior(weak_ptr<BehaviorInfo> info, weak_ptr<Object> object, Field* field, Factory* factory)
+	: object(object), field(field), factory(factory){
 
 	if (auto sInfo = info.lock()) {
 		name = sInfo->name;

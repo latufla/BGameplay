@@ -4,14 +4,11 @@
 
 class CustomBehavior : public Behavior {
 public:
-	CustomBehavior(std::weak_ptr<BehaviorInfo> info, std::weak_ptr<Object> obj, Factory* factory)
-		: Behavior(info, obj),
-		factory(factory) {
+	CustomBehavior(std::weak_ptr<BehaviorInfo> info, std::weak_ptr<Object> obj, Field* field, Factory* factory)
+		: Behavior(info, obj, field, factory){
 	};
 
 protected:
-	Factory* factory;
-
 	bool doStep(float stepSec) override {
 		__super::doStep(stepSec);
 

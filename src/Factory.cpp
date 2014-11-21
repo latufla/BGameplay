@@ -28,8 +28,8 @@ std::shared_ptr<BehaviorInfo> Factory::createBehaviorInfo(std::string name) {
 	return res;
 }
 
-std::shared_ptr<Behavior> Factory::createBehavior(std::shared_ptr<BehaviorInfo> info, std::weak_ptr<Object> obj) {
-	return nameToBehaviorCreator.at(info->name)(info, obj, this);
+std::shared_ptr<Behavior> Factory::createBehavior(std::shared_ptr<BehaviorInfo> info, std::weak_ptr<Object> obj, Field* field) {
+	return nameToBehaviorCreator.at(info->name)(info, obj, field, this);
 }
 
 std::shared_ptr<Command> Factory::createCommand(std::string name, std::weak_ptr<Object> caller, std::weak_ptr<Object> target) {

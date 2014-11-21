@@ -4,11 +4,12 @@
 #include "BehaviorInfo.h"
 
 class Factory;
+class Field;
 
 class Behavior {
 public:
 	Behavior() = delete;
-	Behavior(std::weak_ptr<BehaviorInfo>, std::weak_ptr<Object>);
+	Behavior(std::weak_ptr<BehaviorInfo>, std::weak_ptr<Object>, Field*, Factory*);
 
 	~Behavior() = default;
 
@@ -36,5 +37,8 @@ protected:
 	
 	float lifeTime = 0.0f;
 	bool enabled = false;
+
+	Field* field;
+	Factory* factory;
 };
 
