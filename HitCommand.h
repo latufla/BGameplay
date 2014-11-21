@@ -7,9 +7,16 @@ public:
 		: Command(name, caller, target) {
 	};
 
-protected:
-	void execute() override {
+	void setPower(uint32_t val) { power = val; }
 
+protected:
+	uint32_t power;
+
+	void execute() override {
+		if(auto sTarget = target.lock()) {
+			CustomObject* cTarget = (CustomObject*)sTarget.get();
+			cTarget->setHp(cTarget->getHp() - power);
+		}
 	};
 };
 

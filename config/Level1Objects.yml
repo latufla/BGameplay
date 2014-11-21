@@ -1,17 +1,21 @@
 healer:
  id: 0
+ hp: 100
  behaviors:
   - name: HealBehavior
     priority: 1
+    power: 20
  applicableCommands:
   - name: HealCommand
     commanders: [healer]
 	
 damager:
  id: 1
+ hp: 100
  behaviors:
   - name: HitBehavior
     priority: 2
+    power: 25
  applicableCommands:
   - name: HealCommand
     commanders: [healer]
@@ -20,9 +24,11 @@ damager:
 	
 enemy:
  id: 2
+ hp: 200
  behaviors:
   - name: HitBehavior
     priority: 2
+    power: 25
  applicableCommands:
   - name: HitCommand
     commanders: [damager]

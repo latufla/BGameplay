@@ -1,12 +1,20 @@
 #pragma once
 #include "src\Behavior.h"
+#include "HealCommand.h"
 
 class HealBehavior : public Behavior{
 public:
 	HealBehavior(std::weak_ptr<BehaviorInfo> info, std::weak_ptr<Object> obj, Field* field, Factory* factory)
 		: Behavior(info, obj, field, factory) {
+		if(auto sInfo = info.lock()) {
+			HealBehaviorInfo* cInfo = (HealBehaviorInfo*)sInfo.get();
+			power = cInfo->power;
+		}
 	};
+
 protected:
+	uint32_t power;
+
 	bool doStep(float stepSec) override {
 		__super::doStep(stepSec);
 		
@@ -17,11 +25,15 @@ protected:
 			return false;
 
 		auto command = cFactory->HEAL_COMMAND;
-		auto target = field->getObjectsBy(command, commander->getName()); // typically its AI or User choice, just a cap here
-		if(!target.size())
+		auto targets = field->getObjectsBy(command, commander->getName()); // typically its AI or User choice, just a cap here
+		if(!targets.size())
 			return false;
 
-		auto cmd = factory->createCommand(command, object, target.at(0));
+		auto cmd = factory->createCommand(command, object, targets.at(0));
+		
+		HealCommand* heal = (HealCommand*)cmd.get();
+		heal->setPower(power);
+		
 		return cmd->tryToExecute();
 	};
 
