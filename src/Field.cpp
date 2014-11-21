@@ -2,6 +2,8 @@
 #include "Field.h"
 #include <algorithm>
 
+using std::vector;
+using std::string;
 using std::shared_ptr;
 using std::weak_ptr;
 using std::make_shared;
@@ -175,17 +177,13 @@ bool Field::doRemoveStep() {
 	return true;
 }
 
-std::weak_ptr<Object> Field::getObjectBy(std::string applicableCommand, std::string commander) {
-	auto it = find_if(begin(objects), end(objects), [&applicableCommand, &commander](shared_ptr<Object> obj) {
-		auto info = obj->getInfo();
+vector<weak_ptr<Object>> Field::getObjectsBy(string applicableCommand, string commander) {
+	vector<weak_ptr<Object>> res;
+	for(auto& i : objects) {
+		auto info = i->getInfo();
 		auto sInfo = info.lock();
-		if(!sInfo)
-			return false;
-
-		return sInfo->canApplyCommand(applicableCommand, commander);
-	});
-	if(it == end(objects))
-		throw exception("Field::getObjectBy no such object");
-
-	return *it;
+		if(sInfo && sInfo->canApplyCommand(applicableCommand, commander))
+			res.push_back(i);
+	}
+	return res;
 }

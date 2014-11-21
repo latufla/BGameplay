@@ -18,8 +18,11 @@ protected:
 			return false;
 
 		auto command = cFactory->HIT_COMMAND;
-		auto target = field->getObjectBy(command, commander->getName()); // typically its AI or User choice, just a cap here
-		auto cmd = factory->createCommand(command, object, target);
+		auto target = field->getObjectsBy(command, commander->getName()); // typically its AI or User choice, just a cap here
+		if(!target.size())
+			return false;
+
+		auto cmd = factory->createCommand(command, object, target.at(0));
 		return cmd->tryToExecute();
 	};
 };

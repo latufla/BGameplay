@@ -15,7 +15,7 @@ public:
 	
 	virtual ~Field();
 
-	std::weak_ptr<Object> getObjectBy(std::string applicableCommand, std::string commander);
+	std::vector<std::weak_ptr<Object>> getObjectsBy(std::string applicableCommand, std::string commander);
 
 	bool startBehaviors();
 	bool startBehaviors(std::weak_ptr<Object>);
