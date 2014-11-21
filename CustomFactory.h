@@ -6,7 +6,8 @@ public:
 	const std::string HIT_BEHAVIOR = "HitBehavior";
 	const std::string HEAL_BEHAVIOR = "HealBehavior";
 
-	const std::string CUSTOM_COMMAND = "CustomCommand";
+	const std::string HIT_COMMAND = "HitCommand";
+	const std::string HEAL_COMMAND = "HealCommand";
 
 	CustomFactory() : Factory(){
 	};

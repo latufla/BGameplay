@@ -175,3 +175,17 @@ bool Field::doRemoveStep() {
 	return true;
 }
 
+std::weak_ptr<Object> Field::getObjectBy(std::string applicableCommand, std::string commander) {
+	auto it = find_if(begin(objects), end(objects), [&applicableCommand, &commander](shared_ptr<Object> obj) {
+		auto info = obj->getInfo();
+		auto sInfo = info.lock();
+		if(!sInfo)
+			return false;
+
+		return sInfo->canApplyCommand(applicableCommand, commander);
+	});
+	if(it == end(objects))
+		throw exception("Field::getObjectBy no such object");
+
+	return *it;
+}

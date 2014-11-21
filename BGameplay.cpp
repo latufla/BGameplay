@@ -8,14 +8,17 @@
 #include "src/Behavior.h"
 #include "src/Field.h"
 
-#include "CustomBehavior.h"
-#include "CustomBehaviorInfo.h"
-#include "CustomCommand.h"
 #include "CustomFactory.h"
 #include "CustomFieldInfo.h"
 #include "CustomField.h"
 #include "CustomObjectInfo.h"
 #include "CustomObject.h"
+#include "HitBehaviorInfo.h"
+#include "HealBehaviorInfo.h"
+#include "HitBehavior.h"
+#include "HealBehavior.h"
+#include "HitCommand.h"
+#include "HealCommand.h"
 
 
 int _tmain(int argc, _TCHAR* argv[])
@@ -29,13 +32,14 @@ int _tmain(int argc, _TCHAR* argv[])
 	factory.registerObjectInfo< CustomObjectInfo, ObjectInfo >();
 	factory.registerObject< CustomObject, Object >();
 
-	factory.registerBehaviorInfo< CustomBehaviorInfo, BehaviorInfo >(factory.HIT_BEHAVIOR); // typically unique classes
-	factory.registerBehaviorInfo< CustomBehaviorInfo, BehaviorInfo >(factory.HEAL_BEHAVIOR);
+	factory.registerBehaviorInfo< HitBehaviorInfo, BehaviorInfo >(factory.HIT_BEHAVIOR); // typically unique classes
+	factory.registerBehaviorInfo< HealBehaviorInfo, BehaviorInfo >(factory.HEAL_BEHAVIOR);
 
-	factory.registerBehavior< CustomBehavior, Behavior >(factory.HIT_BEHAVIOR);
-	factory.registerBehavior< CustomBehavior, Behavior >(factory.HEAL_BEHAVIOR);
+	factory.registerBehavior< HitBehavior, Behavior >(factory.HIT_BEHAVIOR);
+	factory.registerBehavior< HealBehavior, Behavior >(factory.HEAL_BEHAVIOR);
 
-	factory.registerCommand<CustomCommand, Command>(factory.CUSTOM_COMMAND);
+	factory.registerCommand<HitCommand, Command>(factory.HIT_COMMAND);
+	factory.registerCommand<HealCommand, Command>(factory.HEAL_COMMAND);
 	// ---
 
 	// EACH LEVEL, load infos
