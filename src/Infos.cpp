@@ -1,6 +1,7 @@
 #include "SharedHeaders.h"
 #include "Infos.h"
 #include "Factory.h"
+#include "exceptions\Exception.h"
 
 using std::unordered_map;
 using std::vector;
@@ -16,7 +17,7 @@ namespace bg {
 		Node doc;
 		parser.Load(level);
 		if(!parser.GetNextDocument(doc))
-			throw std::exception("Factory::parseInfos can`t parse level");
+			throw ExternalFormatException(__FUNCTION__, __LINE__);
 
 		fieldInfo = factory->createFieldInfo();
 		for(auto it = doc.begin(); it != doc.end(); ++it) {
@@ -28,7 +29,7 @@ namespace bg {
 
 		parser.Load(objects);
 		if(!parser.GetNextDocument(doc))
-			throw std::exception("Factory::parseInfos can`t parse objects");
+			throw ExternalFormatException(__FUNCTION__, __LINE__);
 
 		for(auto i = doc.begin(); i != doc.end(); ++i) {
 			shared_ptr<ObjectInfo> info = factory->createObjectInfo();

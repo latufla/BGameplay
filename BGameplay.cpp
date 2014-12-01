@@ -19,7 +19,7 @@
 #include "HealBehavior.h"
 #include "HitCommand.h"
 #include "HealCommand.h"
-#include "src/exceptions/BadWeakPtr.h"
+#include "src/exceptions/Exception.h"
 
 
 void run();
@@ -56,30 +56,36 @@ void run() {
 	factory.registerCommand<HealCommand, bg::Command>(factory.HEAL_COMMAND);
 	// ---
 
-	// TODO: exceptions safety
+
 	// EACH LEVEL, load infos
-	std::ifstream level, objects;
-	level.open("config/Level1.yml");
-	objects.open("config/Level1Objects.yml");
-	factory.parseInfos(level, objects);
-	level.close();
-	objects.close();
-	// ---
+	{
+		std::ifstream level, objects;
+		level.open("config/Level1.yml");
+		if(!level.is_open())
+			throw bg::IOException(__FUNCTION__, __LINE__);
+
+		objects.open("config/Level1Objects.yml");
+		if(!objects.is_open())
+			throw bg::IOException(__FUNCTION__, __LINE__);
+
+		factory.parseInfos(level, objects);
+	}
+
 
 	auto field = factory.createField();
-
 	field->startBehaviors();
     field->doStep(1.0f);
 	field->doStep(1.0f);
 }
 
 void handleExceptions() {
-	std::string error = "";
-	
+	std::string error = "";	
 	try {
 		throw;
-	} catch(bg::BadWeakPtr& e) {
+	} catch(bg::Exception& e) {
 		error = e.msg();
+	} catch(...) {
+		error = "unknown exception";
 	}
 
 	if(error != "") {
