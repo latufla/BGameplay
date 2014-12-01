@@ -1,6 +1,7 @@
 #include "SharedHeaders.h"
 #include "Field.h"
 #include <algorithm>
+#include "exceptions\BadWeakPtr.h"
 
 using std::vector;
 using std::string;
@@ -33,7 +34,7 @@ namespace bg {
 	weak_ptr<Object> Field::addObject(weak_ptr<FieldInfo::FieldItemInfo> itemInfo) {
 		auto sItemInfo = itemInfo.lock();
 		if(!sItemInfo)
-			throw exception("Field::addObject can`t add object");
+			throw BadWeakPtr(__FUNCTION__, __LINE__);
 
 		auto infos = factory->getInfos();
 		return addObject(sItemInfo->id, infos->getObjectInfoBy(sItemInfo->name));
@@ -42,7 +43,7 @@ namespace bg {
 	weak_ptr<Object> Field::addObject(uint32_t id, weak_ptr<ObjectInfo> info) {
 		auto sInfo = info.lock();
 		if(!sInfo)
-			throw exception("Field::addObject can`t add object");
+			throw BadWeakPtr(__FUNCTION__, __LINE__);
 
 		shared_ptr<Object> obj = factory->createObject(id, sInfo);
 		objects.push_back(obj);
