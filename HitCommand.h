@@ -1,10 +1,10 @@
 #pragma once
 #include "src\Command.h"
 
-class HitCommand : public Command{
+class HitCommand : public bg::Command {
 public:
-	HitCommand(std::string name, std::weak_ptr<Object> caller, std::weak_ptr<Object> target)
-		: Command(name, caller, target) {
+	HitCommand(std::string name, std::weak_ptr<bg::Object> caller, std::weak_ptr<bg::Object> target)
+		: bg::Command(name, caller, target) {
 	};
 
 	void setPower(uint32_t val) { power = val; }

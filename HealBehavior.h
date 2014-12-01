@@ -2,10 +2,10 @@
 #include "src\Behavior.h"
 #include "HealCommand.h"
 
-class HealBehavior : public Behavior{
+class HealBehavior : public bg::Behavior {
 public:
-	HealBehavior(std::weak_ptr<BehaviorInfo> info, std::weak_ptr<Object> obj, Field* field, Factory* factory)
-		: Behavior(info, obj, field, factory) {
+	HealBehavior(std::weak_ptr<bg::BehaviorInfo> info, std::weak_ptr<bg::Object> obj, bg::Field* field, bg::Factory* factory)
+		: bg::Behavior(info, obj, field, factory) {
 		if(auto sInfo = info.lock()) {
 			HealBehaviorInfo* cInfo = (HealBehaviorInfo*)sInfo.get();
 			power = cInfo->power;

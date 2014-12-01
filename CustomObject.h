@@ -1,10 +1,10 @@
 #pragma once
 #include "src/Object.h"
 
-class CustomObject : public Object{
+class CustomObject : public bg::Object{
 public:
-	CustomObject(uint32_t id, std::weak_ptr<ObjectInfo> info)
-		: Object(id, info) {
+	CustomObject(uint32_t id, std::weak_ptr<bg::ObjectInfo> info)
+		: bg::Object(id, info) {
 		if(auto sInfo = info.lock()) {
 			CustomObjectInfo* cInfo = (CustomObjectInfo*)sInfo.get();
 			hp = cInfo->hp;

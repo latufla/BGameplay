@@ -1,10 +1,11 @@
 #include "SharedHeaders.h"
 #include "BehaviorInfo.h"
 
+namespace bg {
+	void BehaviorInfo::update(std::string prop, int32_t val) {
+		__super::update(prop, val);
 
-void BehaviorInfo::update(std::string prop, int32_t val) {
-	__super::update(prop, val);
-
-	if(prop == "priority")
-		priority = (val > 0) ? val : 0;
+		if(prop == "priority")
+			priority = (val > 0) ? val : 0;
+	}
 }

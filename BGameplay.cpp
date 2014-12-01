@@ -26,20 +26,20 @@ int _tmain(int argc, _TCHAR* argv[])
 	CustomFactory factory;
 
 	// ONCE, register all infos and derived classes
-	factory.registerFieldInfo< CustomFieldInfo, FieldInfo >();
-	factory.registerField< CustomField, Field >();
+	factory.registerFieldInfo< CustomFieldInfo, bg::FieldInfo >();
+	factory.registerField< CustomField, bg::Field >();
 
-	factory.registerObjectInfo< CustomObjectInfo, ObjectInfo >();
-	factory.registerObject< CustomObject, Object >();
+	factory.registerObjectInfo< CustomObjectInfo, bg::ObjectInfo >();
+	factory.registerObject< CustomObject, bg::Object >();
 
-	factory.registerBehaviorInfo< HitBehaviorInfo, BehaviorInfo >(factory.HIT_BEHAVIOR); // typically unique classes
-	factory.registerBehaviorInfo< HealBehaviorInfo, BehaviorInfo >(factory.HEAL_BEHAVIOR);
+	factory.registerBehaviorInfo< HitBehaviorInfo, bg::BehaviorInfo >(factory.HIT_BEHAVIOR); // typically unique classes
+	factory.registerBehaviorInfo< HealBehaviorInfo, bg::BehaviorInfo >(factory.HEAL_BEHAVIOR);
 
-	factory.registerBehavior< HitBehavior, Behavior >(factory.HIT_BEHAVIOR);
-	factory.registerBehavior< HealBehavior, Behavior >(factory.HEAL_BEHAVIOR);
+	factory.registerBehavior< HitBehavior, bg::Behavior >(factory.HIT_BEHAVIOR);
+	factory.registerBehavior< HealBehavior, bg::Behavior >(factory.HEAL_BEHAVIOR);
 
-	factory.registerCommand<HitCommand, Command>(factory.HIT_COMMAND);
-	factory.registerCommand<HealCommand, Command>(factory.HEAL_COMMAND);
+	factory.registerCommand<HitCommand, bg::Command>(factory.HIT_COMMAND);
+	factory.registerCommand<HealCommand, bg::Command>(factory.HEAL_COMMAND);
 	// ---
 
 	// EACH LEVEL, load infos
@@ -54,7 +54,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	objects.close();
 	// ---
 
-	std::shared_ptr<Field> field = factory.createField();
+	auto field = factory.createField();
 
 	field->startBehaviors();
 	field->doStep(1.0f);

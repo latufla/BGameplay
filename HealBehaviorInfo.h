@@ -1,9 +1,9 @@
 #pragma once
 #include "src\BehaviorInfo.h"
 
-class HealBehaviorInfo : public BehaviorInfo{
+class HealBehaviorInfo : public bg::BehaviorInfo {
 public:
-	HealBehaviorInfo() : BehaviorInfo() {
+	HealBehaviorInfo() : bg::BehaviorInfo() {
 	};
 
 	uint32_t power;

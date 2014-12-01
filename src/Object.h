@@ -3,44 +3,49 @@
 #include <vector>
 #include "ObjectInfo.h"
 
-class Behavior;
 
-class Object {
-public:
-	Object() = delete;
-	Object(uint32_t id, std::weak_ptr<ObjectInfo> info);	
+namespace bg {
 
-	virtual ~Object();
+	class Behavior;
 
-	uint32_t getId() const { return id; }
-	std::string getName() const { return name; }
+	class Object {
+	public:
+		Object() = delete;
+		Object(uint32_t id, std::weak_ptr<ObjectInfo> info);
 
-	void setRemove(bool val) { remove = val; }
-	bool getRemove() const { return remove; }
+		virtual ~Object();
 
-	std::weak_ptr<ObjectInfo> getInfo() const { return info; }
+		uint32_t getId() const { return id; }
+		std::string getName() const { return name; }
 
-protected:
-	bool addBehavior(std::weak_ptr<Behavior>);
-	bool removeBehavior(std::weak_ptr<Behavior>);
+		std::weak_ptr<ObjectInfo> getInfo() const { return info; }
 
-	bool startBehaviors();
-	bool stopBehaviors();
-	
-	bool pauseBehaviors();
-	bool resumeBehaviors();
+	protected:
+		void setRemove(bool val) { remove = val; }
+		bool getRemove() const { return remove; }
 
-	std::vector<std::weak_ptr<Behavior>> getBehaviors() const { return behaviors; }
+		bool addBehavior(std::weak_ptr<Behavior>);
+		bool removeBehavior(std::weak_ptr<Behavior>);
 
-	uint32_t id;
-	
-	std::string name;
-	std::weak_ptr<ObjectInfo> info;
+		bool startBehaviors();
+		bool stopBehaviors();
 
-	std::vector<std::weak_ptr<Behavior>> behaviors;
-	
-	bool remove = false;
+		bool pauseBehaviors();
+		bool resumeBehaviors();
 
-	friend class Field;
-};
+		std::vector<std::weak_ptr<Behavior>> getBehaviors() const { return behaviors; }
+
+		uint32_t id;
+
+		std::string name;
+		std::weak_ptr<ObjectInfo> info;
+
+		std::vector<std::weak_ptr<Behavior>> behaviors;
+
+		bool remove = false;
+
+		friend class Field;
+		friend class Behavior;
+	};
+}
 

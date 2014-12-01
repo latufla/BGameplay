@@ -3,12 +3,16 @@
 
 using std::string;
 
-void Info::update(string prop, int32_t val) {
-	id = (prop == "id") ? val : -1;
-}
+namespace bg {
+	void Info::update(string prop, int32_t val) {
+		if(prop == "id")
+			id = val;
+	}
 
-void Info::update(string prop, float val) {}
+	void Info::update(string prop, float val) {}
 
-void Info::update(string prop, string val) {
-	name = (prop == "name") ? val : "illegal name";
+	void Info::update(string prop, string val) {
+		if(prop == "name")
+			name = val;
+	}
 }

@@ -2,10 +2,10 @@
 #include "src\Behavior.h"
 #include "HitCommand.h"
 
-class HitBehavior : public Behavior{
+class HitBehavior : public bg::Behavior{
 public:
-	HitBehavior(std::weak_ptr<BehaviorInfo> info, std::weak_ptr<Object> obj, Field* field, Factory* factory)
-		: Behavior(info, obj, field, factory) {
+	HitBehavior(std::weak_ptr<bg::BehaviorInfo> info, std::weak_ptr<bg::Object> obj, bg::Field* field, bg::Factory* factory)
+		: bg::Behavior(info, obj, field, factory) {
 		if(auto sInfo = info.lock()) {
 			HitBehaviorInfo* cInfo = (HitBehaviorInfo*)sInfo.get();
 			power = cInfo->power;

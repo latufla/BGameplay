@@ -2,24 +2,26 @@
 #include <memory>
 #include "Object.h"
 
-class Command {
-public:
-	Command() = delete;
-	Command(std::string name, std::weak_ptr<Object> caller, std::weak_ptr<Object> target);
+namespace bg {
+	class Command {
+	public:
+		Command() = delete;
+		Command(std::string name, std::weak_ptr<Object> caller, std::weak_ptr<Object> target);
 
-	~Command() = default;
+		~Command() = default;
 
-	bool tryToExecute();
+		bool tryToExecute();
 
-	std::string getName() const { return name; }
+		std::string getName() const { return name; }
 
-protected:
-	virtual bool canExecute();
-	virtual void execute() = 0;
+	protected:
+		virtual bool canExecute(); // allow
+		virtual void execute() = 0; // implement
 
-	std::string name;
-	
-	std::weak_ptr<Object> caller;
-	std::weak_ptr<Object> target;
-};
+		std::string name;
+
+		std::weak_ptr<Object> caller;
+		std::weak_ptr<Object> target;
+	};
+}
 

@@ -1,10 +1,10 @@
 #pragma once
 #include "src\FieldInfo.h"
 
-class CustomFieldInfo : public FieldInfo{
+class CustomFieldInfo : public bg::FieldInfo{
 public:
 	CustomFieldInfo() 
-		: FieldInfo() {
+		: bg::FieldInfo() {
 	};
 };
 

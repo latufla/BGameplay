@@ -1,10 +1,10 @@
 #pragma once
 #include "src/ObjectInfo.h"
 
-class CustomObjectInfo : public ObjectInfo{
+class CustomObjectInfo : public bg::ObjectInfo {
 public:
 	CustomObjectInfo() 
-		: ObjectInfo() {
+		: bg::ObjectInfo() {
 	}
 
 	void update(std::string prop, int32_t val) {
