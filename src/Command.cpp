@@ -21,16 +21,16 @@ namespace bg {
 	bool Command::canExecute() {
 		auto sTarget = target.lock();
 		if(!sTarget)
-			throw WeakPtrException(__FUNCTION__, __LINE__); 
+			throw WeakPtrException(EXCEPTION_INFO); 
 		
 		auto info = sTarget->getInfo();
 		auto sInfo = info.lock();
 		if(!sInfo)
-			throw WeakPtrException(__FUNCTION__, __LINE__);
+			throw WeakPtrException(EXCEPTION_INFO);
 
 		auto sCaller = caller.lock();
 		if(!sCaller)
-			throw WeakPtrException(__FUNCTION__, __LINE__);
+			throw WeakPtrException(EXCEPTION_INFO);
 
 		return sInfo->canApplyCommand(getName(), sCaller->getName());
 	}

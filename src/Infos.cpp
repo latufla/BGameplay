@@ -17,7 +17,7 @@ namespace bg {
 		Node doc;
 		parser.Load(level);
 		if(!parser.GetNextDocument(doc))
-			throw ExternalFormatException(__FUNCTION__, __LINE__);
+			throw ExternalFormatException(EXCEPTION_INFO);
 
 		fieldInfo = factory->createFieldInfo();
 		for(auto it = doc.begin(); it != doc.end(); ++it) {
@@ -29,7 +29,7 @@ namespace bg {
 
 		parser.Load(objects);
 		if(!parser.GetNextDocument(doc))
-			throw ExternalFormatException(__FUNCTION__, __LINE__);
+			throw ExternalFormatException(EXCEPTION_INFO);
 
 		for(auto i = doc.begin(); i != doc.end(); ++i) {
 			shared_ptr<ObjectInfo> info = factory->createObjectInfo();

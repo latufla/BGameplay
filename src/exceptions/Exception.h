@@ -2,6 +2,8 @@
 #include <memory>
 #include "../SharedHeaders.h"
 
+#define EXCEPTION_INFO __FUNCTION__,__LINE__
+
 namespace bg {
 	class Exception : public std::exception {
 	public:

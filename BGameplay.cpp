@@ -62,11 +62,11 @@ void run() {
 		std::ifstream level, objects;
 		level.open("config/Level1.yml");
 		if(!level.is_open())
-			throw bg::IOException(__FUNCTION__, __LINE__);
+			throw bg::IOException(EXCEPTION_INFO);
 
 		objects.open("config/Level1Objects.yml");
 		if(!objects.is_open())
-			throw bg::IOException(__FUNCTION__, __LINE__);
+			throw bg::IOException(EXCEPTION_INFO);
 
 		factory.parseInfos(level, objects);
 	}
@@ -90,7 +90,7 @@ void handleExceptions() {
 
 	if(error != "") {
 		std::cout << error;
-		std::exit(1);
+		std::exit(1);	
 	}
 }
 

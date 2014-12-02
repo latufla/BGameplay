@@ -34,9 +34,9 @@ namespace bg {
 	protected:
 		virtual std::weak_ptr<Object> addObject(std::weak_ptr<FieldInfo::FieldItemInfo>);
 		std::weak_ptr<Object> addObject(uint32_t id, std::weak_ptr<ObjectInfo> info);
-		bool removeObject(std::weak_ptr<Object>, bool onNextStep = false);
+		void removeObject(std::weak_ptr<Object>, bool onNextStep = false);
 
-		bool doRemoveStep();
+		void doRemoveStep();
 
 		std::vector<std::shared_ptr<Object>> objects;
 		std::vector<std::shared_ptr<Behavior>> behaviors;

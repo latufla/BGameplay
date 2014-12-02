@@ -34,7 +34,7 @@ namespace bg {
 	weak_ptr<Object> Field::addObject(weak_ptr<FieldInfo::FieldItemInfo> itemInfo) {
 		auto sItemInfo = itemInfo.lock();
 		if(!sItemInfo)
-			throw WeakPtrException(__FUNCTION__, __LINE__);
+			throw WeakPtrException(EXCEPTION_INFO);
 
 		auto infos = factory->getInfos();
 		return addObject(sItemInfo->id, infos->getObjectInfoBy(sItemInfo->name));
@@ -43,7 +43,7 @@ namespace bg {
 	weak_ptr<Object> Field::addObject(uint32_t id, weak_ptr<ObjectInfo> info) {
 		auto sInfo = info.lock();
 		if(!sInfo)
-			throw WeakPtrException(__FUNCTION__, __LINE__);
+			throw WeakPtrException(EXCEPTION_INFO);
 
 		shared_ptr<Object> obj = factory->createObject(id, sInfo);
 		objects.push_back(obj);
@@ -61,16 +61,14 @@ namespace bg {
 		return weak_ptr<Object>(obj);
 	}
 
-	bool Field::removeObject(weak_ptr<Object> obj, bool onNextStep) {
+	void Field::removeObject(weak_ptr<Object> obj, bool onNextStep) {
 		auto sObj = obj.lock();
 		if(!sObj)
-			return false;
+			throw WeakPtrException(EXCEPTION_INFO);
 
 		sObj->setRemove(true);
 		if(!onNextStep)
-			return doRemoveStep(); // not efficient, but single entry point 
-
-		return true;
+			doRemoveStep(); // not efficient, but single entry point 
 	}
 
 
@@ -86,7 +84,7 @@ namespace bg {
 	bool Field::startBehaviors(weak_ptr<Object> obj) {
 		auto sObj = obj.lock();
 		if(!sObj)
-			return false;
+			throw WeakPtrException(EXCEPTION_INFO);
 
 		return sObj->startBehaviors();
 	}
@@ -104,7 +102,7 @@ namespace bg {
 	bool Field::stopBehaviors(weak_ptr<Object> obj) {
 		auto sObj = obj.lock();
 		if(!sObj)
-			return false;
+			throw WeakPtrException(EXCEPTION_INFO);
 
 		return sObj->stopBehaviors();
 	}
@@ -122,7 +120,7 @@ namespace bg {
 	bool Field::pauseBehaviors(weak_ptr<Object> obj) {
 		auto sObj = obj.lock();
 		if(!sObj)
-			return false;
+			throw WeakPtrException(EXCEPTION_INFO);
 
 		return sObj->pauseBehaviors();
 	}
@@ -140,7 +138,7 @@ namespace bg {
 	bool Field::resumeBehaviors(weak_ptr<Object> obj) {
 		auto sObj = obj.lock();
 		if(!sObj)
-			return false;
+			throw WeakPtrException(EXCEPTION_INFO);
 
 		return sObj->resumeBehaviors();
 	}
@@ -156,7 +154,7 @@ namespace bg {
 		return res;
 	}
 
-	bool Field::doRemoveStep() {
+	void Field::doRemoveStep() {
 		auto lastObject = remove_if(begin(objects), end(objects), [this](shared_ptr<Object> obj) -> bool {
 			if(!obj->getRemove())
 				return false;
@@ -174,17 +172,18 @@ namespace bg {
 			}
 			return true;
 		});
-
 		objects.erase(lastObject, cend(objects));
-		return true;
 	}
 
 	vector<weak_ptr<Object>> Field::getObjectsBy(string applicableCommand, string commander) {
 		vector<weak_ptr<Object>> res;
 		for(auto& i : objects) {
 			auto info = i->getInfo();
-			auto sInfo = info.lock();
-			if(sInfo && sInfo->canApplyCommand(applicableCommand, commander))
+			auto sInfo = info.lock();	
+			if(!sInfo)
+				throw WeakPtrException(EXCEPTION_INFO);
+
+			if(sInfo->canApplyCommand(applicableCommand, commander))
 				res.push_back(i);
 		}
 		return res;
