@@ -27,8 +27,6 @@ namespace bg {
 		});
 		if(it == cend(behaviors))
 			behaviors.push_back(b);
-
-		pauseBehaviors();
 	}
 
 	void Object::removeBehavior(weak_ptr<Behavior> b) {
@@ -49,46 +47,54 @@ namespace bg {
 	}
 
 	bool Object::startBehaviors() {
+		bool res = true;
 		for(auto b : behaviors) {
 			auto sb = b.lock();
 			if(!sb)
 				throw WeakPtrException(EXCEPTION_INFO);
 
-			sb->start();
+			bool sc = sb->start();
+			res = res && sc;
 		}
-		return true;
+		return res;
 	}
 
 	bool Object::stopBehaviors() {
+		bool res = true;
 		for(auto b : behaviors) {
 			auto sb = b.lock();
 			if(!sb)
 				throw WeakPtrException(EXCEPTION_INFO);
 			
-			sb->stop();
+			bool sc = sb->stop();
+			res = res && sc;
 		}
-		return true;
+		return res;
 	}
 
 	bool Object::resumeBehaviors() {
+		bool res = true;
 		for(auto b : behaviors) {
 			auto sb = b.lock();
 			if(!sb)
 				throw WeakPtrException(EXCEPTION_INFO);
 			
-			sb->resume();
+			bool sc = sb->resume();
+			res = res && sc;
 		}
-		return true;
+		return res;
 	}
 
 	bool Object::pauseBehaviors() {
+		bool res = true;
 		for(auto b : behaviors) {
 			auto sb = b.lock();
 			if(!sb)
 				throw WeakPtrException(EXCEPTION_INFO);
 		
-			sb->pause();
+			bool sc = sb->pause();
+			res = res && sc;
 		}
-		return true;
+		return res;
 	}
 }
