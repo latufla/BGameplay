@@ -53,11 +53,11 @@ namespace bg {
 	private:
 		std::shared_ptr<Infos> infos;
 
-		std::shared_ptr<FieldInfo>(*fieldInfoCreator)();
-		std::shared_ptr<Field>(*fieldCreator)(Factory*);
+		std::shared_ptr<FieldInfo>(*fieldInfoCreator)() = nullptr;
+		std::shared_ptr<Field>(*fieldCreator)(Factory*) = nullptr;
 
-		std::shared_ptr<ObjectInfo>(*objectInfoCreator)();
-		std::shared_ptr<Object>(*objectCreator)(uint32_t, std::weak_ptr<ObjectInfo>);
+		std::shared_ptr<ObjectInfo>(*objectInfoCreator)() = nullptr;
+		std::shared_ptr<Object>(*objectCreator)(uint32_t, std::weak_ptr<ObjectInfo>) = nullptr;
 
 		std::unordered_map <
 			std::string,

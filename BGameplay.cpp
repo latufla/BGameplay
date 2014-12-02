@@ -39,34 +39,35 @@ int _tmain(int argc, _TCHAR* argv[])
 void run() {
 	CustomFactory factory;
 
-	// ONCE, register all infos and derived classes
-	factory.registerFieldInfo< CustomFieldInfo, bg::FieldInfo >();
+	// ONCE, register all classes
+ 	factory.registerFieldInfo< CustomFieldInfo, bg::FieldInfo >();
 	factory.registerField< CustomField, bg::Field >();
+ 
+ 	factory.registerObjectInfo< CustomObjectInfo, bg::ObjectInfo >();
+  	factory.registerObject< CustomObject, bg::Object >();
 
-	factory.registerObjectInfo< CustomObjectInfo, bg::ObjectInfo >();
-	factory.registerObject< CustomObject, bg::Object >();
-
-	factory.registerBehaviorInfo< HitBehaviorInfo, bg::BehaviorInfo >(factory.HIT_BEHAVIOR); // typically unique classes
-	factory.registerBehaviorInfo< HealBehaviorInfo, bg::BehaviorInfo >(factory.HEAL_BEHAVIOR);
+	factory.registerBehaviorInfo< HitBehaviorInfo, bg::BehaviorInfo >(factory.HIT_BEHAVIOR);
+ 	factory.registerBehaviorInfo< HealBehaviorInfo, bg::BehaviorInfo >(factory.HEAL_BEHAVIOR);
 
 	factory.registerBehavior< HitBehavior, bg::Behavior >(factory.HIT_BEHAVIOR);
-	factory.registerBehavior< HealBehavior, bg::Behavior >(factory.HEAL_BEHAVIOR);
+ 	factory.registerBehavior< HealBehavior, bg::Behavior >(factory.HEAL_BEHAVIOR);
 
 	factory.registerCommand<HitCommand, bg::Command>(factory.HIT_COMMAND);
-	factory.registerCommand<HealCommand, bg::Command>(factory.HEAL_COMMAND);
+ 	factory.registerCommand<HealCommand, bg::Command>(factory.HEAL_COMMAND);
 	// ---
 
 
 	// EACH LEVEL, load infos
 	{
-		std::ifstream level, objects;
-		level.open("config/Level1.yml");
+		std::string levelPath = "config/Level1.yml";
+		std::ifstream level(levelPath);
 		if(!level.is_open())
-			throw bg::IOException(EXCEPTION_INFO);
+			throw bg::IOException(EXCEPTION_INFO, levelPath);
 
-		objects.open("config/Level1Objects.yml");
+		std::string objectsPath = "config/Level1Objects.yml";
+		std::ifstream objects(objectsPath);
 		if(!objects.is_open())
-			throw bg::IOException(EXCEPTION_INFO);
+			throw bg::IOException(EXCEPTION_INFO, objectsPath);
 
 		factory.parseInfos(level, objects);
 	}
@@ -84,6 +85,8 @@ void handleExceptions() {
 		throw;
 	} catch(bg::Exception& e) {
 		error = e.msg();
+	} catch(std::exception& e) {
+		error = e.what();
 	} catch(...) {
 		error = "unknown exception";
 	}
