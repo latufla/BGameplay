@@ -13,7 +13,7 @@ namespace bg {
 		Object() = delete;
 		Object(uint32_t id, std::weak_ptr<ObjectInfo> info);
 
-		virtual ~Object();
+		~Object() = default;
 
 		uint32_t getId() const { return id; }
 		std::string getName() const { return name; }
@@ -24,8 +24,8 @@ namespace bg {
 		void setRemove(bool val) { remove = val; }
 		bool getRemove() const { return remove; }
 
-		bool addBehavior(std::weak_ptr<Behavior>);
-		bool removeBehavior(std::weak_ptr<Behavior>);
+		void addBehavior(std::weak_ptr<Behavior>);
+		void removeBehavior(std::weak_ptr<Behavior>);
 
 		bool startBehaviors();
 		bool stopBehaviors();

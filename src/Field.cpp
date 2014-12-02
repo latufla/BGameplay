@@ -159,6 +159,7 @@ namespace bg {
 			if(!obj->getRemove())
 				return false;
 
+			obj->stopBehaviors();
 			auto behaviorsToRemove = obj->getBehaviors();
 			for(auto b : behaviorsToRemove) {
 				auto sb = b.lock();

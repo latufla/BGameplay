@@ -2,6 +2,7 @@
 #include <algorithm>
 #include "Object.h"
 #include "Behavior.h"
+#include "exceptions\Exception.h"
 
 using std::weak_ptr;
 
@@ -13,32 +14,10 @@ namespace bg {
 			name = sInfo->name;
 	}
 
-	Object::~Object() {
-		stopBehaviors();
-	}
-
-	bool Object::addBehavior(weak_ptr<Behavior> b) {
+	void Object::addBehavior(weak_ptr<Behavior> b) {
 		auto sb = b.lock();
 		if(!sb)
-			return false;
-
-		auto it = find_if(cbegin(behaviors), cend(behaviors), [sb](weak_ptr<Behavior> b2) {
-			if(auto sb2 = b2.lock())
-				return sb == sb2;
-
-			return false;
-		});
-		if(it != cend(behaviors))
-			return false;
-
-		behaviors.push_back(b);
-		return true;
-	}
-
-	bool Object::removeBehavior(weak_ptr<Behavior> b) {
-		auto sb = b.lock();
-		if(!sb)
-			return false;
+			throw WeakPtrException(EXCEPTION_INFO);
 
 		auto it = find_if(cbegin(behaviors), cend(behaviors), [sb](weak_ptr<Behavior> b2) {
 			if(auto sb2 = b2.lock())
@@ -47,41 +26,68 @@ namespace bg {
 			return false;
 		});
 		if(it == cend(behaviors))
-			return false;
+			behaviors.push_back(b);
 
-		sb->stop();
-		behaviors.erase(it);
-		return true;
+		pauseBehaviors();
+	}
+
+	void Object::removeBehavior(weak_ptr<Behavior> b) {
+		auto sb = b.lock();
+		if(!sb)
+			throw WeakPtrException(EXCEPTION_INFO);
+
+		auto it = find_if(cbegin(behaviors), cend(behaviors), [sb](weak_ptr<Behavior> b2) {
+			if(auto sb2 = b2.lock())
+				return sb == sb2;
+
+			return false;
+		});
+		if(it != cend(behaviors)) {
+			sb->stop();
+			behaviors.erase(it);
+		}
 	}
 
 	bool Object::startBehaviors() {
 		for(auto b : behaviors) {
-			if(auto sb = b.lock())
-				sb->start();
+			auto sb = b.lock();
+			if(!sb)
+				throw WeakPtrException(EXCEPTION_INFO);
+
+			sb->start();
 		}
 		return true;
 	}
 
 	bool Object::stopBehaviors() {
 		for(auto b : behaviors) {
-			if(auto sb = b.lock())
-				sb->stop();
+			auto sb = b.lock();
+			if(!sb)
+				throw WeakPtrException(EXCEPTION_INFO);
+			
+			sb->stop();
 		}
 		return true;
 	}
 
 	bool Object::resumeBehaviors() {
 		for(auto b : behaviors) {
-			if(auto sb = b.lock())
-				sb->resume();
+			auto sb = b.lock();
+			if(!sb)
+				throw WeakPtrException(EXCEPTION_INFO);
+			
+			sb->resume();
 		}
 		return true;
 	}
 
 	bool Object::pauseBehaviors() {
 		for(auto b : behaviors) {
-			if(auto sb = b.lock())
-				sb->pause();
+			auto sb = b.lock();
+			if(!sb)
+				throw WeakPtrException(EXCEPTION_INFO);
+		
+			sb->pause();
 		}
 		return true;
 	}
